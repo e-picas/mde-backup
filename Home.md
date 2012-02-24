@@ -1,3 +1,5 @@
+**This work began on febrary 2012 ... it is still in progress, so please test and look at it as you like, and write some return on this repo. Thank you in advance.**
+
 ## Why a new *Markdown* parser ?
 
 That's true, many parsers already exist for Markdown syntax, in different coding languages and for different usages ... So why create a new one ? Just for fun ?
@@ -6,4 +8,4 @@ No. As I often use the [Fletcher Penney](http://fletcherpenney.net/)'s [**Multi 
 
 So I took *the bull by the horn* (*french expression*) and decided to modify the original great PHP version of Markdown, written by [Michel Fortin](http://michelf.com/projects/php-markdown/extra/), to add all features of the Multi version.
 
-**This work began on febrary 2012 ... it is still in progress, so please test and look at it as you like, and write some return on this repo. Thank you in advance.**
+Please see the [Working Method](https://github.com/PieroWbmstr/Full_PHP_Markdown/wiki/WorkingMethod) page to learn about this project structure.
