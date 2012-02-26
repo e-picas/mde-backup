@@ -12,7 +12,7 @@ I used to work as a corrector for french texts so I am quite friend with typogra
 
 I also found very usefull the complex **HTML tables structure** allowed by Fletcher's version. It permit to build some complex tables, easy to read in the file and with a deep xHTML meaning in the code.
 
-Another thing interesting in that version, what is, in my opinion, a lack in others, is that you can **define attributes for images and links**. This push higher the opportunity to build a pretty HTML page by choosing images sizes for example, adding some CSS styles to links etc.
+Another thing interesting in that version, that is, in my opinion, a lack in others, is that you can **define attributes for images and links**. This push higher the opportunity to build a pretty HTML page by choosing images sizes for example, adding some CSS styles to links etc.
 
 What was missing, for me, in Fletcher's version that I found in *Markdown Extra*, was the possibility to write some **definitions lists** and parse them automatically. This is not often used in web pages, but definition lists have a special meaning in HTML ...
 
