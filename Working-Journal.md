@@ -39,6 +39,6 @@ This is not an obligation or the best way to write PHP code, but I use to work l
 
 The result is a very long script (*more than 3000 lines ...*) that will be our starting point.
 
-## Per functionnality review
+## Third step: a per-functionnality review
 
 Now let's go to work ...
