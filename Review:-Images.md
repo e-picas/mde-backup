@@ -10,7 +10,8 @@ Using this notation is the basis of the synta for images. But it can make the fi
 
 So we can use **references** for images. This allows us to keep the URL and other informations of the image outside of the content. For example:
 
-    This is a paragraph with a referenced image ![alt text][imageid]. I can continue my content clearly because it is still readable for human eyes ...
+    This is a paragraph with a referenced image ![alt text][imageid]. I can continue my content 
+    clearly because it is still readable for human eyes ...
 
     ![imageid]: http://test.com/data1/images/1.jpg "My optional title"
 
