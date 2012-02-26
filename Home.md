@@ -1,5 +1,10 @@
 **This work began on febrary 2012 ... it is still in progress, so please test and look at it as you like, and write some return on this repo. Thank you in advance.**
 
+### Table of contents
+
+-   the [Working Method](https://github.com/PieroWbmstr/Full_PHP_Markdown/wiki/Working-Method) explains the way I try to work on this project
+-   the [Working Journal](https://github.com/PieroWbmstr/Full_PHP_Markdown/wiki/Working-Journal) is a sort of diary of the wip
+
 ## Why a new *Markdown* parser ?
 
 That's true, many parsers already exist for Markdown syntax, in different coding languages and for different usages ... So why create a new one ? Just for fun ?
