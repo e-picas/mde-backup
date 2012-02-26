@@ -1,4 +1,4 @@
-**This work began on febrary 2012 ... it is still in progress, so please test it and look at it as you like. You can write some return, some pull requests or transmit any bug on this repository. Thank you or your collaboration.**
+**This work began on febrary 2012 ... it is still in progress, so please test it and look at it as you like. You can write some return, some pull requests or transmit any bug on this repository. Thank you for your collaboration.**
 
 ### Table of contents
 
