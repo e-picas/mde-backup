@@ -21,6 +21,7 @@ Also interestring in Michel's version is the **abbreviations**. They are automat
 Finally, the idea of the **fenced code blocks** in Michel's version is not so bad. I never use this feature but it can be usefull for any reason.
 
 OK. A complete syntax rules to propose in my new version can now be made:
+
 -   complex tables structure,
 -   attributes for links and images,
 -   glossary and bibliography footnotes,
