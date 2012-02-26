@@ -8,4 +8,4 @@ No. As I often use the [Fletcher Penney](http://fletcherpenney.net/)'s [**Multi 
 
 So I took *the bull by the horn* (*french expression*) and decided to modify the original great PHP version of Markdown, written by [Michel Fortin](http://michelf.com/projects/php-markdown/extra/), to add all features of the Multi version.
 
-Please see the [Working Method](https://github.com/PieroWbmstr/Full_PHP_Markdown/wiki/Working-Method) page to learn about this project structure.
+Please see the [Working Method](https://github.com/PieroWbmstr/Full_PHP_Markdown/wiki/Working-Method) page to learn about this project structure and read the [Working Journal](https://github.com/PieroWbmstr/Full_PHP_Markdown/wiki/Working-Journal) to follow this work.
