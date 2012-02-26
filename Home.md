@@ -4,6 +4,7 @@
 
 -   the [Working Method](https://github.com/PieroWbmstr/Full_PHP_Markdown/wiki/Working-Method) explains the way I try to work on this project
 -   the [Working Journal](https://github.com/PieroWbmstr/Full_PHP_Markdown/wiki/Working-Journal) is a sort of diary of the wip
+-   the [Markdown Syntax cheat sheet](https://github.com/PieroWbmstr/Full_PHP_Markdown/wiki/Markdown-Syntax-Cheat-Sheet) is a complete and condensed syntax rules to use
 
 ## Why a new *Markdown* parser ?
 
