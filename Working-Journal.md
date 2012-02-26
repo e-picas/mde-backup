@@ -35,6 +35,10 @@ One point I can't solve for now is the case of in-page anchors. Fletcher's versi
 
 To have a good working environment, I first re-write the entire code from *Markdown Extra* PHP version. Mathieu Fortin wrote it some years ago ... Some PHP practices has change for now and I rebuild this code in my own way to write PHP.
 
-This is not an obligation or the best way to write PHP code, but I use to work like this ... By the way, I mostly follow the [PEAR coding standards](http://pear.php.net/manual/en/standards.php).
+This is not an obligation or the best way to write PHP code, but I use to work like this ... By the way, I mostly follow the [PEAR coding standards](http://pear.php.net/manual/en/standards.php). I systematically add some DocBlocks comments for each method or variable, with reference to other methods and variables.
 
-The result is a very long script (*more than 3000 lines ...*).
+The result is a very long script (*more than 3000 lines ...*) that will be our starting point.
+
+## Per functionnality review
+
+Now let's go to work ...
