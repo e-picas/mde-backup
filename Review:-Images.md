@@ -31,3 +31,5 @@ As I said, the class will produce an image tag like:
 
 For now, you may write the entire reference definition on a single line. This is not the case in Multi Markdown, which allows to pass a line, but I can't get this feature working for now. This may be one of the evolutions ...
 
+## PCRE masks used for images
+
