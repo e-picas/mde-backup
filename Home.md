@@ -17,7 +17,7 @@ Please see the [Working Method](https://github.com/PieroWbmstr/Full_PHP_Markdown
 
 ## Note about this wiki (*and me*)
 
-As I am french (*désolé*), I try to write documentation pages in understandable english ... but I probably make a huge language errors. Please be kind enough to correct them or inform me about it ... And, finally, do not held against.
+As I am french (*désolé*), I try to write documentation pages in understandable english ... but I probably make huge language errors. Please be kind enough to correct them or inform me about it ... And, finally, do not held against.
 
 The most important is the meaning, not the writing (*although I'd rather write like Shakespeare*).
 
