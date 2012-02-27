@@ -45,10 +45,10 @@ Now let's go to work ...
 
 Please refer to the following pages for features works:
 
--   the [links tags](Review:-Links) 
--   the [images tags](Review:-Images) 
--   the [tables structure](Review:-Tables) 
--   the [extended footnotes feature](Review:-Footnotes,-Glossary-and-Bibliography) 
+-   the [links tags](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Review:-Links) 
+-   the [images tags](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Review:-Images) 
+-   the [tables structure](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Review:-Tables) 
+-   the [extended footnotes feature](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Review:-Footnotes,-Glossary-and-Bibliography) 
 
 
 
