@@ -3,10 +3,11 @@
 ### Table of contents
 
 -   the [Working Method](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Working-Method) explains the way I try to work on this project
--   the [Working Journal](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Working-Journal) is a sort of diary of the wip
+-   the [Working Journal](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Working-Journal) is a sort of diary of the wip ; some features are subject of their own pages :
+    -   the [images tags](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Review:-Images) 
 -   the [Markdown Syntax cheat sheet](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Markdown-Syntax-Cheat-Sheet) is a complete and condensed syntax rules to use
 
-## Why a new *Markdown* parser ?
+## Yet another *Markdown* parser ?
 
 That's true, many parsers already exist for Markdown syntax, in different coding languages and for different usages ... So why create a new one ? Just for fun ?
 
