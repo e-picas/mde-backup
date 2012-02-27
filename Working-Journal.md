@@ -42,3 +42,11 @@ The result is a very long script (*more than 3000 lines ...*) that will be our s
 ## Third step: a per-functionnality review
 
 Now let's go to work ...
+
+Table of features pages:
+
+-   the [links tags](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Review:-Links) 
+-   the [images tags](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Review:-Images) 
+-   the [tables structure](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Review:-Tables) 
+
+
