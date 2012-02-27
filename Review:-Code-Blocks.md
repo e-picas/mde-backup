@@ -24,7 +24,7 @@ Michel Fortin, in his *Markdown Extra* version, added a special writing rule to 
 
 This way you can write some code blocks not counting every spaces of each line (...).
 
-I've found not so long ago an interesting feature added to this fenced syntax imagines by [**Egil Hansen**](    http://egilhansen.com) to create some *language-friendly* code blocks, as it is [preconize by the W3C](http://dev.w3.org/html5/spec-author-view/the-code-element.html#the-code-element). To do so, we just have to write our language just at the end of the first tildes line.
+I've found not so long ago an interesting feature added to this fenced syntax imagines by [**Egil Hansen**](    http://egilhansen.com) to create some *language-friendly* code blocks, as it is [preconize by the W3C](http://dev.w3.org/html5/spec-author-view/the-code-element.html#the-code-element) in the HTML5 specifications. To do so, we just have to write our language just at the end of the first tildes line.
 
     ~~~~html
     My code here
