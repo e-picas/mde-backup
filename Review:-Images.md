@@ -1,3 +1,11 @@
+----
+
+**Progress of this feature:**
+
+> **OK, except that attributes can not be multi-lines**
+
+----
+
 ## Syntax for images
 
 Images can be *inline* in the text, like:
