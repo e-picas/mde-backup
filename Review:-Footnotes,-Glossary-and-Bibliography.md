@@ -19,7 +19,7 @@ On this page we gonna try to explain footnotes usage and differences between **a
 
 ### Footnote
 
-As we said, footnotes are just snippets of additional informations that seems not necessary in the content. For example, if we talk about *Linux* in text about a specific computer, this may not make sense to cite *Linus Trovalds* in the content. But we do want Linus'name to be present in our work, so we add a little note attached to the term "Linux", which can be:
+As we said, footnotes are just snippets of additional informations that seems not necessary in the content. For example, if we talk about *Linux* in a text about a specific computer, it may not makes sense to cite *Linus Trovalds* in the content. But we do want Linus'name to be present in our work, so we add a little note attached to the term "Linux", which can be:
 
 > *An open source operating system created by Linus Trovalds.*
 
@@ -27,9 +27,17 @@ As we said, footnotes are just snippets of additional informations that seems no
 
 A glossary note is most like a definition. It is attached to a specific term and try to give one or more explanations of it. Glossary notes have to be considered as *definitions list* in HTML, except that they will all be placed like footnotes at the end of the content.
 
+For example, if we want to define the term "Linux" as a glossary entry, we will add a marker attached to all occurences of the term, which will reach the footnote definition:
+
+> *Linux: recursive acronym for "Linux Is Not UniX"*
+
 ### Bibliography
 
 A bilbliographic note is a fully referenced external work. This kind of notes is often used in academic or scientific work. The point is that we have to follow some *academic rules* for bibliographic notes, such as naming the authors, writting the title of the work in italic, exactly as it has been published, and cite enough informations (*such as the edition*) to let the lector find this work easily.
+
+For example, if we talk about the creation of Linux and want to add a reference to the very first work of it, we would attach a note after the expression "creation of Linux" which could be:
+
+> Linus Benedict Torvalds (October 5, 1991). *Free minix-like kernel sources for 386-AT*. comp.os.minix. (Web link) Retrieved September 30, 2011.
 
 ## Syntax for footnotes
 
@@ -46,8 +54,8 @@ Fletcher Penney has added the glossary possibility, just refounding the construc
     My text with a footnote ref [^glossaryfootnote].
 
     [^glossaryfootnote]: glossary: term (optional sort key)
-	The actual definition belongs on a new line, and can continue on
-	just as other footnotes.
+        The actual definition belongs on a new line, and can continue on
+        just as other footnotes.
 
 The point here is that the content always starts with `glossary:`. Then we write the term to be defined, followed by an optional *short key* which will be used to later the sorting order of the glossary. Then the definition is on a new line.
 
