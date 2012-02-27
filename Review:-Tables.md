@@ -1,3 +1,13 @@
+----
+
+**Progress of this feature:**
+
+> **Partial:**
+> -   table content can not be separated in multi-body sections
+> -   caption can just be written **before** the table
+
+----
+
 ## Syntax for tables
 
 The first table syntax was (*as I know*) introduced by Michel Fortin in he's *Markdown Extra* version. He imagines a visual syntax like:
@@ -11,13 +21,13 @@ The rules here are that every table's line is written alone on a single line. Th
 
 This syntax is basic but it feets the original Markdown's goal (*to keep a file content human readable*).
 
-Michel has constructed an advanced feature to manage alignment in columns by using colons `:` in the separators line :
+Michel has constructed an advanced feature to manage **alignment in columns** by using colons `:` in the separators line :
 
 - a colon on the left of a separator's cell means a left-aligned column : `:---`
 - a colon on the right of a separator's cell means a right-aligned column : `---:`
 - two colons on the left and the right of a separator's cell means a centered column : `:--:`
 
-Fletcher Penney, in he's *Multi Markdown* version, pushed the table structure one step higher by allowing multi-header lines and multi-columns cells. Let's look an example :
+Fletcher Penney, in he's *Multi Markdown* version, pushed the table structure one step higher by allowing **multi-header lines** and **multi-columns cells**. Let's look an example :
 
     |               | Grouping                    ||
     | First Header  | Second Header | Third header |
@@ -38,3 +48,17 @@ Another new feature of Fletcher's work is that we can precise a **caption** for 
     | Content Cell  | **Cell**      | **Cell**     |
     [ my table caption ]
 
+Finally, Fletcher's imagines an high level of HTML construction allowing to write separate sets of content for each table, separating them by a blank line:
+
+    |               | Grouping                    ||
+    | First Header  | Second Header | Third header |
+    | ------------- | ------------: | :----------: |
+    | Content Cell  |  *Long Cell*                ||
+    | Content Cell  | **Cell**      | **Cell**     |
+    
+    | New section   |   More        |         Data |
+    | And more      |           And more          ||
+
+The result will be a table with two `tbody` sections.
+
+## PCRE masks used for tables
