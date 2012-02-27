@@ -2,9 +2,9 @@
 
 ### Table of contents
 
--   the [Working Method](https://github.com/PieroWbmstr/Full_PHP_Markdown/wiki/Working-Method) explains the way I try to work on this project
--   the [Working Journal](https://github.com/PieroWbmstr/Full_PHP_Markdown/wiki/Working-Journal) is a sort of diary of the wip
--   the [Markdown Syntax cheat sheet](https://github.com/PieroWbmstr/Full_PHP_Markdown/wiki/Markdown-Syntax-Cheat-Sheet) is a complete and condensed syntax rules to use
+-   the [Working Method](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Working-Method) explains the way I try to work on this project
+-   the [Working Journal](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Working-Journal) is a sort of diary of the wip
+-   the [Markdown Syntax cheat sheet](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Markdown-Syntax-Cheat-Sheet) is a complete and condensed syntax rules to use
 
 ## Why a new *Markdown* parser ?
 
@@ -14,7 +14,7 @@ No. As I often use the [Fletcher Penney](http://fletcherpenney.net/)'s [**Multi 
 
 So I took *the bull by the horn* (*french expression*) and decided to modify the extended original [Michel Fortin](http://michelf.com/)'s PHP version, [**Markdown Extra**](http://michelf.com/projects/php-markdown/extra/), to add all features of the Multi version.
 
-Please see the [Working Method](https://github.com/PieroWbmstr/Full_PHP_Markdown/wiki/Working-Method) page to learn about this project structure and read the [Working Journal](https://github.com/PieroWbmstr/Full_PHP_Markdown/wiki/Working-Journal) to follow this work, the choices I made and the difficulties I faced.
+Please see the [Working Method](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Working-Method) page to learn about this project structure and read the [Working Journal](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Working-Journal) to follow this work, the choices I made and the difficulties I faced.
 
 ## Note about this wiki (*and me*)
 
