@@ -3,6 +3,7 @@
 **Progress of this feature:**
 
 > **Partial:**
+>
 > -   table content can not be separated in multi-body sections
 > -   caption can just be written **before** the table
 
