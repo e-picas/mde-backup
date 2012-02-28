@@ -53,6 +53,7 @@ Please refer to the following pages for features works:
 -   the [tables structure](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Review:-Tables) 
 -   the [extended footnotes feature](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Review:-Footnotes,-Glossary-and-Bibliography) 
 -   the [code blocks and *fenced* code blocks](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Review:-Code-Blocks)
+-   the [blockquotes](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Review:-Blockquotes)
 
 ## Fourth step: add some new features
 
