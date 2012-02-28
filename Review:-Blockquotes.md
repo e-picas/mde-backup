@@ -4,6 +4,8 @@
 
 > **OK**
 
+> **todo: check if the cited URL is an URL (!)**
+
 ----
 
 ## Syntax for blockquotes
@@ -28,3 +30,5 @@ This will produce:
     <blockquote cite="http://test.com">
     This is my blockquote, with a content cited from the original "http://test.com" page ...
     </blockquote>
+
+## PCRE masks used for blockquotes
