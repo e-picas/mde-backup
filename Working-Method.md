@@ -17,4 +17,13 @@ Then I wrote a document with a full set of Markdown syntaxes, one part for each 
 
 Finally, file `index.php` is a small interface to parse and visualize results. It basically present a navigation menu to switch the parser to use and display the result of this parsing.
 
+
+### A search on the web for interesting new features
+
+For this work, I also benefited of some other works on Markdown:
+
+-   some interesting HTML5 features added by [**Egil Hansen**](http://egilhansen.com) in his [php-markdown-extra-extended](https://github.com/egil/php-markdown-extra-extended) version,
+-   an *object oriented* version refound by [**Max Tsepkov**](https://github.com/garygolden) in his [markdown-oo-php](https://github.com/garygolden/markdown-oo-php) version.
+
+
 **That's it!**
