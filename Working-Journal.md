@@ -20,14 +20,17 @@ Also interestring in Michel's version is the **abbreviations**. They are automat
 
 Finally, the idea of the **fenced code blocks** in Michel's version is not so bad. I never use this feature but it can be usefull for any reason.
 
-OK. A complete syntax rules to propose in my new version can now be made:
+As I often use them in my Markdown documents, Fletcher's **meta-data** in the header to inform the parser about the document's date, its language, its author or any other thing seems to me essential ...
+
+OK. A complete list of syntax rules to propose in my new version can now be made:
 
 -   complex tables structure,
 -   attributes for links and images,
 -   glossary and bibliography footnotes,
 -   definition lists,
 -   abbreviations,
--   fenced code blocks.
+-   fenced code blocks,
+-   meta-data in the header of the document.
 
 One point I can't solve for now is the case of in-page anchors. Fletcher's version allows to create automatic anchors on any title, Michel's version allows to write them specifically in text, wrapped between curly brackets. This is the first point to discuss, analyze and test ...
 
@@ -51,4 +54,6 @@ Please refer to the following pages for features works:
 -   the [extended footnotes feature](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Review:-Footnotes,-Glossary-and-Bibliography) 
 -   the [code blocks and *fenced* code blocks](https://github.com/PieroWbmstr/Extended_Markdown/wiki/Review:-Code-Blocks)
 
+## Fourth step: add some new features
 
+This is to do ...
