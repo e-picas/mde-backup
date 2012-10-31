@@ -5,3 +5,5 @@ Thumbs.db
 ehthumbs.db
 Icon
 MD_test.md
+benchmark/db/*
+test_compiler/OO_Extended_Markdown.compile.php
