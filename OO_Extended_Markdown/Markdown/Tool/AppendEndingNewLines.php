@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Tool_AppendEndingNewLines extends Markdown_Tool
 {
 	

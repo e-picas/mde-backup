@@ -17,31 +17,27 @@
  */
 
 /**
- *
+ * Abstract base tool class
  */
 abstract class Markdown_Tool implements Markdown_Extended_Gamut_Interface
 {
 
- /**
-  *
-  */
+	/**
+	 *
+	 */
 	public static function getDefaultMethod()
 	{
 		return 'run';
 	}
 
- /**
-  *
-  */
+	/**
+	 *
+	 */
 	abstract public function run($text);
 
-// ----------------------------------
-// GAMUTS
-// ----------------------------------
-	
- /**
-  *
-  */
+	/**
+	 *
+	 */
 	public function runGamut( $gamut, $text )
 	{
 		$_gmt = Markdown_Extended::get( 'Markdown_Extended_Gamut' );

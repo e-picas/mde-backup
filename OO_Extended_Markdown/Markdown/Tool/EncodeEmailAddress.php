@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Tool_EncodeEmailAddress extends Markdown_Tool
 {
 

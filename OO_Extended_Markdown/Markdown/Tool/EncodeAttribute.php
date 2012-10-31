@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Tool_EncodeAttribute extends Markdown_Tool
 {
 

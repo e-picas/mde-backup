@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_Header extends Markdown_Filter
 {
 	
@@ -53,7 +50,7 @@ class Markdown_Filter_Header extends Markdown_Filter
 				(?:[ ]+\{\#([-_:a-zA-Z0-9]+)\})?	# $2: Id attribute
 				[ ]*\n(=+|-+)[ ]*\n+				      # $3: Header footer
 			}mx',
-			array(&$this, '_setext_callback'), $text);
+			array($this, '_setext_callback'), $text);
 
 		// atx-style headers:
 		$text = preg_replace_callback('{
@@ -66,7 +63,7 @@ class Markdown_Filter_Header extends Markdown_Filter
 				[ ]*
 				\n+
 			}xm',
-			array(&$this, '_atx_callback'), $text);
+			array($this, '_atx_callback'), $text);
 
 		return $text;
 	}

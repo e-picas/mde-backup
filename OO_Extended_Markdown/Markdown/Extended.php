@@ -65,9 +65,8 @@ class Markdown_Extended
 	 */
 	public static function &getInstance()
 	{
-	 	if (empty(self::$_instance)) {
+	 	if (empty(self::$_instance))
 	 		self::$_instance = new Markdown_Extended;
-		}
 	 	return self::$_instance;
 	}
 
@@ -79,13 +78,15 @@ class Markdown_Extended
 	public function debug( $a='', $what=null, $exit=true ) 
 	{
 		echo '<pre>';
-		if (!is_null($what)) var_export($what);
+		if (!is_null($what)) 
+			var_export($what);
 		else {
 			$mde = self::getInstance();
 			var_export( $mde::$registry );
 		}
 		echo '</pre>';
-		if ($exit) exit(0);
+		if ($exit) 
+			exit(0);
 	}
 	
 	/**
@@ -110,17 +111,16 @@ class Markdown_Extended
 	 */
 	static function load( $class )
 	{
-		$pathes = explode('_', $class);
-		$_f = join('/', $pathes).'.php';
+		if (@class_exists($class)) return true;
+		$_f = str_replace('_', '/', $class).'.php';
 		if (defined('MARKDOWN_EXTENDED_DIR'))
 			$_f = rtrim(MARKDOWN_EXTENDED_DIR, '/').'/'.$_f;
-		if (@file_exists($_f)) {
+		if (@file_exists($_f))
 			include_once $_f;
-		} else {
+		else
 			throw new InvalidArgumentException(sprintf(
-      	"Class '%s' not found in '%s'!", $class, $_f
-      ));
-		}
+				"Class '%s' not found in '%s'!", $class, $_f
+			));
 	}
 
 	/**
@@ -129,8 +129,10 @@ class Markdown_Extended
 	public function factory( $class, $params=null )
 	{
 		self::load($class);
-		if (!is_null($params)) $_obj = new $class( $params );
-		else $_obj = new $class;
+		if (!is_null($params)) 
+			$_obj = new $class( $params );
+		else 
+			$_obj = new $class;
 		self::_setRegistryEntry( $class, $_obj, 'load' );
 		return $_obj;
 	}
@@ -146,8 +148,10 @@ class Markdown_Extended
 	{
 		$mde =& self::getInstance();
 		$obj = $mde->_getRegistryEntry( $class, 'load' );
-		if (!empty($obj)) return $obj;
-		else return $mde->factory( $class, $params );
+		if (!empty($obj)) 
+			return $obj;
+		else 
+			return $mde->factory( $class, $params );
 	}
 
 	/**
@@ -235,8 +239,8 @@ class Markdown_Extended
 								self::$registry['load'][$var] = $val;
 							else
 								throw new InvalidArgumentException(sprintf(
-  			  	  		"New registry entry in 'load' stack must be an object instance, <%s> given!", gettype($val)
-			  	  	  ));
+  			  	  					"New registry entry in 'load' stack must be an object instance, <%s> given!", gettype($val)
+			  	  	  			));
 							break;
 						case 'config':
 							self::$registry['config'][$var] = $val;
@@ -250,23 +254,23 @@ class Markdown_Extended
 				else
 				{
 					throw new InvalidArgumentException(sprintf(
-  		  		"Unknown stack <%s> in registry!", $stack
-		  	  ));
+  		  				"Unknown stack <%s> in registry!", $stack
+		  	  		));
 				}
-		  } 
-		  else 
-		  {
+			} 
+			else 
+			{
 				throw new InvalidArgumentException(sprintf(
-    			"New registry entry must be named by alpha-numeric string, <%s> given!", $var
-	    	));
-		  }
-	  } 
-	  else 
-	  {
+    				"New registry entry must be named by alpha-numeric string, <%s> given!", $var
+	    		));
+			}
+		} 
+		else 
+		{
 			throw new InvalidArgumentException(sprintf(
-    		"No stack for new registry entry <%s>!", $var
-	    ));
-	  }
+    			"No stack for new registry entry <%s>!", $var
+	    	));
+		}
 	}
 
 	/**
@@ -284,8 +288,8 @@ class Markdown_Extended
 					{
 						case 'load':
 							throw new RuntimeException(
-  			  			"Registry entry in 'load' stack can not be extended!"
-			  		  );
+  			  					"Registry entry in 'load' stack can not be extended!"
+			  		  		);
 							break;
 						case 'config': case 'parser':
 							self::$registry[$stack][$var] = self::_extend(self::$registry[$stack][$var], $val);
@@ -296,23 +300,23 @@ class Markdown_Extended
 				else
 				{
 					throw new InvalidArgumentException(sprintf(
-  		  		"Unknown stack <%s> in registry!", $stack
-		  	  ));
+  		  				"Unknown stack <%s> in registry!", $stack
+		  	  		));
 				}
-		  } 
-		  else 
-		  {
+			} 
+			else 
+			{
 				throw new InvalidArgumentException(sprintf(
-    			"New registry entry must be named by alpha-numeric string, <%s> given!", $var
-	    	));
-		  }
-	  } 
-	  else 
-	  {
+    				"New registry entry must be named by alpha-numeric string, <%s> given!", $var
+	    		));
+			}
+		} 
+		else 
+		{
 			throw new InvalidArgumentException(sprintf(
-    		"No stack for new registry entry <%s>!", $var
-	    ));
-	  }
+    			"No stack for new registry entry <%s>!", $var
+	    	));
+		}
 	}
 
 	/**
@@ -330,8 +334,8 @@ class Markdown_Extended
 					{
 						case 'load':
 							throw new RuntimeException(
-  			  			"Registry entry in 'load' stack can not be extended!"
-			  		  );
+  			  					"Registry entry in 'load' stack can not be extended!"
+			  		  		);
 							break;
 						case 'config': case 'parser':
 							if ($val) {
@@ -348,23 +352,23 @@ class Markdown_Extended
 				else
 				{
 					throw new InvalidArgumentException(sprintf(
-  		  		"Unknown stack <%s> in registry!", $stack
-		  	  ));
+  		  				"Unknown stack <%s> in registry!", $stack
+		  	  		));
 				}
-		  } 
-		  else 
-		  {
+			} 
+			else 
+			{
 				throw new InvalidArgumentException(sprintf(
-    			"New registry entry must be named by alpha-numeric string, <%s> given!", $var
-	    	));
-		  }
-	  } 
-	  else 
-	  {
+    				"New registry entry must be named by alpha-numeric string, <%s> given!", $var
+	    		));
+			}
+		} 
+		else 
+		{
 			throw new InvalidArgumentException(sprintf(
-    		"No stack for new registry entry <%s>!", $var
-	    ));
-	  }
+    			"No stack for new registry entry <%s>!", $var
+	    	));
+		}
 	}
 
 	/**
@@ -384,24 +388,24 @@ class Markdown_Extended
 				else
 				{
 					throw new InvalidArgumentException(sprintf(
-  		  		"Unknown stack <%s> in registry!", $stack
-		  	  ));
+  		  				"Unknown stack <%s> in registry!", $stack
+		  	  		));
 				}
-		  } 
-		  else 
-		  {
+			} 
+			else 
+			{
 				throw new InvalidArgumentException(sprintf(
-  	  		"Registry entry must be retrieved by alpha-numeric string, <%s> given!", $var
-	  	  ));
-		  }
-	  } 
-	  else 
-	  {
+  	  				"Registry entry must be retrieved by alpha-numeric string, <%s> given!", $var
+	  	  		));
+			}
+		} 
+		else 
+		{
 			throw new InvalidArgumentException(sprintf(
-    		"No stack for retreiving registry entry <%s>!", $var
-	    ));
-	  }
-	  return $default;
+    			"No stack for retreiving registry entry <%s>!", $var
+	    	));
+		}
+		return $default;
 	}
 
 	/**
@@ -420,19 +424,19 @@ class Markdown_Extended
 					return $what; 
 				} else {
 					throw new InvalidArgumentException(
-    				"Trying to extend an array with not an array!"
-			    );
+    					"Trying to extend an array with not an array!"
+			    	);
 				}
 				break;
 			case 'object': 
 				throw new InvalidArgumentException(
-    			"Trying to extend an object!"
-		    );
+    				"Trying to extend an object!"
+		    	);
 				break;
 			default: 
 				throw new InvalidArgumentException(sprintf(
-  	  		"No extending definition found for type <%s>!", gettype($what)
-		    ));
+  	  				"No extending definition found for type <%s>!", gettype($what)
+		    	));
 				break;
 		}
 	}

@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_HorizontalRule extends Markdown_Filter
 {
 	

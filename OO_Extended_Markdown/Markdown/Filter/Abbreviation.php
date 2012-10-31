@@ -16,22 +16,17 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_Abbreviation extends Markdown_Filter
 {
 
-	/**
-	 * 
-	 */
 	public function _setup()
 	{
 		Markdown_Extended::setVar('abbr_desciptions', array());
 		Markdown_Extended::setVar('abbr_word_re', '');
 		$abbr_word_re='';
 		$abbr_desciptions=array();
-		foreach (Markdown_Extended::getVar('predef_abbr') as $abbr_word => $abbr_desc) {
+		foreach (Markdown_Extended::getVar('predef_abbr') as $abbr_word => $abbr_desc) 
+		{
 			if ($abbr_word_re)
 				$abbr_word_re .= '|';
 			$abbr_word_re .= preg_quote($abbr_word);
@@ -41,9 +36,6 @@ class Markdown_Filter_Abbreviation extends Markdown_Filter
 		Markdown_Extended::setVar('abbr_desciptions', $abbr_desciptions);
 	}
 
-	/**
-	 * 
-	 */
 	public function _teardown()
 	{
 		Markdown_Extended::setVar('abbr_desciptions', array());
@@ -59,7 +51,7 @@ class Markdown_Filter_Abbreviation extends Markdown_Filter
 	 */
 	public function transform($text) 
 	{
-		if (Markdown_Extended::getConfig('abbr_word_re')) {
+		if (Markdown_Extended::getConfig('abbr_word_re'))
 			// cannot use the /x modifier because abbr_word_re may 
 			// contain significant spaces:
 			$text = preg_replace_callback('{'.
@@ -67,8 +59,7 @@ class Markdown_Filter_Abbreviation extends Markdown_Filter
 				'(?:'.Markdown_Extended::getConfig('abbr_word_re').')'.
 				'(?![\w\x1A])'.
 				'}', 
-				array(&$this, '_callback'), $text);
-		}
+				array($this, '_callback'), $text);
 		return $text;
 	}
 
@@ -113,7 +104,7 @@ class Markdown_Filter_Abbreviation extends Markdown_Filter
 				^[ ]{0,'.$less_than_tab.'}\*\[(.+?)\][ ]?:	# abbr_id = $1
 				(.*)					# text = $2 (no blank lines allowed)	
 			}xm',
-			array(&$this, '_strip_callback'),
+			array($this, '_strip_callback'),
 			$text);
 	}
 

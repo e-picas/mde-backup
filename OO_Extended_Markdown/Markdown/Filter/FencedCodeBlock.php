@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_FencedCodeBlock extends Markdown_Filter
 {
 
@@ -52,7 +49,7 @@ class Markdown_Filter_FencedCodeBlock extends Markdown_Filter
 				)
 				\1 [ ]* \n          # Closing marker
 			}xm',
-			array(&$this, '_callback'), $text);
+			array($this, '_callback'), $text);
 	}
 
 	/**
@@ -68,7 +65,7 @@ class Markdown_Filter_FencedCodeBlock extends Markdown_Filter
 		$codeblock = $matches[3];
 		$language  = $matches[2];
 		$codeblock = htmlspecialchars($codeblock, ENT_NOQUOTES);
-		$codeblock = preg_replace_callback('/^\n+/', array(&$this, '_newlines'), $codeblock);
+		$codeblock = preg_replace_callback('/^\n+/', array($this, '_newlines'), $codeblock);
 		$codeblock = "<pre><code"
 			.( !empty($language) ? " class=\"language-$language\"" : '' )
 			.">$codeblock</code></pre>";

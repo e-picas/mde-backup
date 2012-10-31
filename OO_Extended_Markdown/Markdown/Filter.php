@@ -16,32 +16,29 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 abstract class Markdown_Filter implements Markdown_Extended_Gamut_Interface
 {
 
- /**
-  *
-  */
+	/**
+	 *
+	 */
 	public static function getDefaultMethod()
 	{
 		return 'transform';
 	}
 
- /**
-  *
-  */
+	/**
+	 *
+	 */
 	abstract public function transform($text);
 
 // ----------------------------------
 // GAMUTS
 // ----------------------------------
 	
- /**
-  *
-  */
+	/**
+	 *
+	 */
 	public function runGamut( $gamut, $text )
 	{
 		$_gmt = Markdown_Extended::get( 'Markdown_Extended_Gamut' );
@@ -114,7 +111,7 @@ abstract class Markdown_Filter implements Markdown_Extended_Gamut_Interface
 	 */
 	public function unhash($text) 
 	{
-		return preg_replace_callback('/(.)\x1A[0-9]+\1/', array(&$this, '_unhash_callback'), $text);
+		return preg_replace_callback('/(.)\x1A[0-9]+\1/', array($this, '_unhash_callback'), $text);
 	}
 
 	/**

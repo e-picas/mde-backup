@@ -70,9 +70,8 @@ class Markdown_Extended_Parser extends Markdown_Extended
 			.preg_quote(Markdown_Extended::getConfig('escape_chars')).']');
 
 		if (!empty($options))
-		foreach($options as $_opt_name=>$_opt_value) {
-			Markdown_Extended::setConfig($_opt_name, $_opt_value);
-		}
+			foreach($options as $_opt_name=>$_opt_value)
+				Markdown_Extended::setConfig($_opt_name, $_opt_value);
 
 		// Initial gamuts
 		self::runGamuts('initial_gamut');
@@ -84,6 +83,7 @@ class Markdown_Extended_Parser extends Markdown_Extended
 	protected function _setup() 
 	{
 		// Clear global hashes.
+		Markdown_Extended::setVar('cross_references', array());
 		Markdown_Extended::setVar('urls', $this->predef_urls);
 		Markdown_Extended::setVar('titles', $this->predef_titles);
 		Markdown_Extended::setVar('attributes', $this->predef_attributes);
@@ -145,14 +145,11 @@ class Markdown_Extended_Parser extends Markdown_Extended
 
 		// If 'special_gamut', run only this
 		$special_gamut = Markdown_Extended::getConfig('special_gamut');
-		if (!empty($special_gamut)) {
-
+		if (!empty($special_gamut))
 			$text = self::runGamuts('special_gamut', $text);
-		} else {
-
+		else
 			// Run document gamut methods
 			$text = self::runGamuts('document_gamut', $text);
-		}
 
 		self::_teardown();
 		return $text . "\n";
@@ -165,13 +162,13 @@ class Markdown_Extended_Parser extends Markdown_Extended
 	{
 		if (empty($gamuts)) return $text;
 
-		if (is_string($gamuts)) {
+		if (is_string($gamuts)) 
+		{
 			$gamuts = Markdown_Extended::getConfig( $gamuts );
-			if (empty($gamuts) || !is_array($gamuts)) {
+			if (empty($gamuts) || !is_array($gamuts))
 				throw new UnexpectedValueException(sprintf(
-  	  		"Called gamut table can't be found, get <%s>!", $gamuts
-	  	  ));
-			}
+  	  				"Called gamut table can't be found, get <%s>!", $gamuts
+	  	  		));
 		}
 
 		if (!empty($gamuts) && is_array($gamuts))

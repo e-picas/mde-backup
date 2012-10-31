@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Builder_Documentation extends Markdown_Builder
 {
 
@@ -29,14 +26,14 @@ class Markdown_Builder_Documentation extends Markdown_Builder
 		if (empty($base_path) && defined('MARKDOWN_EXTENDED_DIR'))
 			$base_path = MARKDOWN_EXTENDED_DIR;
 
-		if (!empty($base_path)) {
-			if (@file_exists($base_path) && @is_dir($base_path)) {
+		if (!empty($base_path)) 
+		{
+			if (@file_exists($base_path) && @is_dir($base_path))
 				$this->base_path = rtrim($base_path, '/').'/';
-			} else {
+			else
 				throw new InvalidArgumentException(sprintf(
-  	  		"Base path for documentation must be an existing directory, <%s> given!", $base_path
-		    ));
-			}
+  	  				"Base path for documentation must be an existing directory, <%s> given!", $base_path
+		    	));
 		}
 	}
 	
@@ -55,9 +52,9 @@ class Markdown_Builder_Documentation extends Markdown_Builder
 
 		// Properties
 		$class_properties=array();
-		foreach( $class->getProperties() as $property){
+		foreach( $class->getProperties() as $property)
 			$class_properties[] = self::buildClassPropertyString($property, $class);
-		}
+
 		if (!empty($class_properties))
 			$class_properties = join("\n", $class_properties);
 		else
@@ -65,9 +62,9 @@ class Markdown_Builder_Documentation extends Markdown_Builder
 
 		// Constants
 		$class_constants=array();
-		foreach( $class->getConstants() as $constant_name=>$constant_value){
+		foreach( $class->getConstants() as $constant_name=>$constant_value)
 			$class_constants[] = self::buildConstantString($constant_name, $constant_value);
-		}
+
 		if (!empty($class_constants))
 			$class_constants = join("\n", $class_constants);
 		else
@@ -75,9 +72,9 @@ class Markdown_Builder_Documentation extends Markdown_Builder
 
 		// Methods
 		$class_methods=array();
-		foreach( $class->getMethods() as $method){
+		foreach( $class->getMethods() as $method)
 			$class_methods[] = self::buildMethodString($method, $class);
-		}
+
 		if (!empty($class_methods))
 			$class_methods = join("\n", $class_methods);
 		else
@@ -164,9 +161,8 @@ EOT;
 		$line_num = $method->getStartLine();
 
 		$method_arguments = array();
-		foreach($method->getParameters() as $argument) {
+		foreach($method->getParameters() as $argument)
 			$method_arguments[] = self::buildParameterString( $argument, $method );
-		}
 		$method_arguments = join(' , ', $method_arguments);
 		
 		$method_doc = trim(self::stripCommentTags( $method->getDocComment() ));

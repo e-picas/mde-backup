@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Tool_EncodeAmpAndAngle extends Markdown_Tool
 {
 
@@ -32,13 +29,13 @@ class Markdown_Tool_EncodeAmpAndAngle extends Markdown_Tool
 	 */
 	public function run($text) 
 	{
-		if (Markdown_Extended::getConfig('no_entities')) {
+		if (Markdown_Extended::getConfig('no_entities'))
 			$text = str_replace('&', '&amp;', $text);
-		} else {
+		else
 			// Ampersand-encoding based entirely on Nat Irons's Amputator
 			// MT plugin: <http://bumppo.net/projects/amputator/>
 			$text = preg_replace('/&(?!#?[xX]?(?:[0-9a-fA-F]+|\w+);)/', '&amp;', $text);
-		}
+
 		// Encode remaining <'s
 		$text = str_replace('<', '&lt;', $text);
 

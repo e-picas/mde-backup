@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_Blockquote extends Markdown_Filter
 {
 	
@@ -42,7 +39,7 @@ class Markdown_Filter_Blockquote extends Markdown_Filter
 				)+
 			  )
 			/xm',
-			array(&$this, '_callback'), $text);
+			array($this, '_callback'), $text);
 	}
 
 	/**
@@ -64,7 +61,7 @@ class Markdown_Filter_Blockquote extends Markdown_Filter
 		$bq = preg_replace('/^/m', "  ", $bq);
 		// These leading spaces cause problem with <pre> content, 
 		// so we need to fix that:
-		$bq = preg_replace_callback('{(\s*<pre>.+?</pre>)}sx', array(&$this, '_callback2'), $bq);
+		$bq = preg_replace_callback('{(\s*<pre>.+?</pre>)}sx', array($this, '_callback2'), $bq);
 
 		return "\n". parent::hashBlock("<blockquote"
 			.( !empty($cite) ? " cite=\"$cite\"" : '' )

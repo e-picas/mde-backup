@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_LinkDefinition extends Markdown_Filter
 {
 	
@@ -74,7 +71,7 @@ class Markdown_Filter_LinkDefinition extends Markdown_Filter
 							)?	        # attributes are optional
 							(\n+|\Z)
 			}xm',
-			array(&$this, '_strip_callback'), $text);
+			array($this, '_strip_callback'), $text);
 	}
 
 	/**

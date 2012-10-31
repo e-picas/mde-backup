@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Tool_Detab extends Markdown_Tool
 {
 	
@@ -56,7 +53,7 @@ class Markdown_Tool_Detab extends Markdown_Tool
 	 */
 	public function run($text) 
 	{
-		$text = preg_replace_callback('/^.*\t.*$/m', array(&$this, '_callback'), $text);
+		$text = preg_replace_callback('/^.*\t.*$/m', array($this, '_callback'), $text);
 		return $text;
 	}
 

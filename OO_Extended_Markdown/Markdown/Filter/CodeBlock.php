@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_CodeBlock extends Markdown_Filter
 {
 
@@ -41,7 +38,7 @@ class Markdown_Filter_CodeBlock extends Markdown_Filter
 				)
 				((?=^[ ]{0,'.Markdown_Extended::getConfig('tab_width').'}\S)|\Z)	# Lookahead for non-space at line-start, or end of doc
 			}xm',
-			array(&$this, '_callback'), $text);
+			array($this, '_callback'), $text);
 	}
 
 	/**

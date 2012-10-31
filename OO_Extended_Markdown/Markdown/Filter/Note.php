@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_Note extends Markdown_Filter
 {
 	
@@ -85,7 +82,7 @@ class Markdown_Filter_Note extends Markdown_Filter
 				)*
 			)		
 			}xm',
-			array(&$this, '_strip_callback'),
+			array($this, '_strip_callback'),
 			$text);
 
 		// Link defs are in the form: [#id]: url "optional title"
@@ -104,7 +101,7 @@ class Markdown_Filter_Note extends Markdown_Filter
 				)*
 			)		
 			}xm',
-			array(&$this, '_strip_callback'),
+			array($this, '_strip_callback'),
 			$text);
 
 		return $text;
@@ -137,7 +134,7 @@ class Markdown_Filter_Note extends Markdown_Filter
 	}
 
 	/**
-	 * Replace footnote references in $text [^id] with a special text-token 
+	 * Replace footnote references in $text [string][#id] and [^id] with a special text-token 
 	 * which will be replaced by the actual footnote marker in appendFootnotes.
 	 *
 	 * @param string $text The text to parse
@@ -147,7 +144,7 @@ class Markdown_Filter_Note extends Markdown_Filter
 	{
 		if (Markdown_Extended::getVar('in_anchor')==false) {
 			$text = preg_replace('{\[\^(.+?)\]}', "F\x1Afn:\\1\x1A:", $text);
-			$text = preg_replace('{\[\#(.+?)\]}', "F\x1Afn:\\1\x1A:", $text);
+			$text = preg_replace('{\[(.+?)\]\[\#(.+?)\]}', " [\\1, F\x1Afn:\\2\x1A:]", $text);
 		}
 		return $text;
 	}
@@ -182,7 +179,7 @@ class Markdown_Filter_Note extends Markdown_Filter
 		}
 	
 		$text = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}', 
-			array(&$this, '_append_callback'), $text);
+			array($this, '_append_callback'), $text);
 	
 		if (!empty(self::$notes_ordered)) 
 		{
@@ -238,7 +235,7 @@ class Markdown_Filter_Note extends Markdown_Filter
 			$footnote .= "\n"; // Need to append newline before parsing.
 			$footnote = parent::runGamut('html_block_gamut', "$footnote\n");				
 			$footnote = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}', 
-					array(&$this, '_append_callback'), $footnote);
+					array($this, '_append_callback'), $footnote);
 				
 			$attr = str_replace("%%", ++self::$notes_counter, $attr);
 			self::$written_notes[$note_id] = self::$notes_counter;
@@ -286,11 +283,11 @@ class Markdown_Filter_Note extends Markdown_Filter
 					\n{1,}
 					(.*?)
 					}x',
-					array(&$this, '_glossary_callback'), $glossary);
+					array($this, '_glossary_callback'), $glossary);
 			$glossary .= "\n"; // Need to append newline before parsing.
 			$glossary = parent::runGamut('html_block_gamut', "$glossary\n");				
 			$glossary = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}', 
-					array(&$this, '_append_callback'), $glossary);
+					array($this, '_append_callback'), $glossary);
 				
 			$attr = str_replace("%%", ++self::$notes_counter, $attr);
 			self::$written_notes[$note_id] = self::$notes_counter;
@@ -338,11 +335,11 @@ class Markdown_Filter_Note extends Markdown_Filter
 					\n{1,}
 					(.*?)
 					}x',
-					array(&$this, '_citation_callback'), $citation);
+					array($this, '_citation_callback'), $citation);
 			$citation .= "\n"; // Need to append newline before parsing.
 			$citation = parent::runGamut('html_block_gamut', "$citation\n");				
 			$citation = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}', 
-					array(&$this, '_append_callback'), $citation);
+					array($this, '_append_callback'), $citation);
 				
 			$attr = str_replace("%%", ++self::$notes_counter, $attr);
 			self::$written_notes[$note_id] = self::$notes_counter;

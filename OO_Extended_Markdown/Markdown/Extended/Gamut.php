@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Extended_Gamut extends Markdown_Extended
 {
 
@@ -32,13 +29,12 @@ class Markdown_Extended_Gamut extends Markdown_Extended
 	 */
 	public function __construct( $gamut_aliases=null )
 	{
-		if (!empty($gamut_aliases) & is_array($gamut_aliases)) {
+		if (!empty($gamut_aliases) & is_array($gamut_aliases))
 			$this->gamutAliases = $gamut_aliases;
-		} else {
+		else
 			throw new InvalidArgumentException(sprintf(
-    		"Gamuts aliases must be an array, <%s> given!", gettype($gamut_aliases)
-	    ));
-		}
+    			"Gamuts aliases must be an array, <%s> given!", gettype($gamut_aliases)
+	    	));
 	}
 
 	/**
@@ -48,8 +44,8 @@ class Markdown_Extended_Gamut extends Markdown_Extended
 	{
 		if (!is_array($gamuts))
 			throw new InvalidArgumentException(sprintf(
-    		"Gamuts list must be an array, <%s> given!", gettype($gamuts)
-	    ));
+    			"Gamuts list must be an array, <%s> given!", gettype($gamuts)
+	    	));
 
 		asort($gamuts);
 		foreach ($gamuts as $method => $priority) 
@@ -65,13 +61,13 @@ class Markdown_Extended_Gamut extends Markdown_Extended
 	{
 		if (!is_array($gamuts))
 			throw new InvalidArgumentException(sprintf(
-    		"Gamuts list must be an array, <%s> given!", gettype($gamuts)
-	    ));
+    			"Gamuts list must be an array, <%s> given!", gettype($gamuts)
+	    	));
 
 		if (!is_string($method))
 			throw new InvalidArgumentException(sprintf(
-    		"Gamuts method must be a string, <%s> given!", gettype($method)
-	    ));
+    			"Gamuts method must be a string, <%s> given!", gettype($method)
+	    	));
 
 		asort($gamuts);
 		foreach ($gamuts as $_gmt => $priority) 
@@ -87,15 +83,17 @@ class Markdown_Extended_Gamut extends Markdown_Extended
 	{
 		if (!is_string($gamut))
 			throw new InvalidArgumentException(sprintf(
-    		"Gamut name must be a string, <%s> given!", gettype($gamut)
-	    ));
+    			"Gamut name must be a string, <%s> given!", gettype($gamut)
+	    	));
 
 		$to_skip = Markdown_Extended::getConfig('skip_filters');
 
 //echo '<br />Executing gamut : '.$gamut;
-		if (substr_count($gamut, ':')) {
+		if (substr_count($gamut, ':')) 
+		{
 			@list($global_class, $class, $method) = explode(':', $gamut);
-			if (!empty($class) && !empty($to_skip) && in_array($class, $to_skip)) return $text;
+			if (!empty($class) && !empty($to_skip) && in_array($class, $to_skip)) 
+				return $text;
 
 			if (!empty($global_class) && isset($this->gamutAliases[ $global_class ]))
 			{
@@ -105,43 +103,43 @@ class Markdown_Extended_Gamut extends Markdown_Extended
 					if (!empty($_method)) $method = $_method;
 					if (empty($method)) $method = $_obj->getDefaultMethod();
 					if (method_exists($_obj, $method)) 
-					{
 						$text = $_obj->$method( $text );
-					} 
 					elseif (!$silent) 
-					{
 						throw new UnexpectedValueException(sprintf(
-			    		"Method name in Gamut must exists for class <%s>!", $class
+			    			"Method name in Gamut must exists for class <%s>!", $class
 						));
-					}
-				} else
+				} 
+				else
+				{
 					throw new UnexpectedValueException(sprintf(
-		    		"Class name in Gamut must be a string, <%s> given!", $class
+		    			"Class name in Gamut must be a string, <%s> given!", $class
 					));
-
-			} else 
+				}
+			} 
+			else 
+			{
 				throw new UnexpectedValueException(sprintf(
-	    		"Gamut name must begin by a gamut alias, <%s> given!", $global_class
+	    			"Gamut name must begin by a gamut alias, <%s> given!", $global_class
 				));
-
-		} elseif(empty($_method)) {
-			
-			if (method_exists($this, $gamut)) {
+			}
+		} 
+		elseif (empty($_method)) 
+		{
+			if (method_exists($this, $gamut)) 
+			{
 				$md = Markdown_Extended::get('Markdown_Extended_Parser');
 				if (method_exists($md, $gamut))
 					$text = $md->$gamut( $text );
-
-			} else {
+			} 
+			else 
+			{
 				$gamuts = Markdown_Extended::getConfig( $gamut );
-
-				if (!empty($gamuts) && is_array($gamuts)) {
+				if (!empty($gamuts) && is_array($gamuts)) 
 					$text = self::runGamuts( $gamuts, $text );
-
-				} else {
+				else 
 					throw new UnexpectedValueException(sprintf(
-			  		"Gamut not found: <%s>!", $gamut
+			  			"Gamut not found: <%s>!", $gamut
 					));
-				}
 			}
 		}
 
@@ -150,9 +148,6 @@ class Markdown_Extended_Gamut extends Markdown_Extended
 
 }
 
-/**
- *
- */
 interface Markdown_Extended_Gamut_Interface
 {
 	public static function getDefaultMethod();

@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Tool_RebuildParagraph extends Markdown_Tool
 {
 	
@@ -45,9 +42,8 @@ class Markdown_Tool_RebuildParagraph extends Markdown_Tool
 			// Clean tag hashes & block tag hashes are left alone.
 			$is_p = !preg_match('/^B\x1A[0-9]+B|^C\x1A[0-9]+C$/', $value);
 			
-			if ($is_p) {
+			if ($is_p)
 				$value = "<p>$value</p>";
-			}
 			$grafs[$key] = $value;
 		}
 		

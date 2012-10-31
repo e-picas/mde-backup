@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_HardBreak extends Markdown_Filter
 {
 
@@ -30,7 +27,7 @@ class Markdown_Filter_HardBreak extends Markdown_Filter
 	public function transform($text) 
 	{
 		// Do hard breaks:
-		return preg_replace_callback('/ {2,}\n/', array(&$this, '_callback'), $text);
+		return preg_replace_callback('/ {2,}\n/', array($this, '_callback'), $text);
 	}
 
 	/**

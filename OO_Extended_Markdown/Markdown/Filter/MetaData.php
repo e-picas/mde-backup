@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_MetaData extends Markdown_Filter
 {
 
@@ -65,7 +62,12 @@ class Markdown_Filter_MetaData extends Markdown_Filter
 	{
 		$line = preg_replace_callback(
 			'{^([a-zA-Z0-9][0-9a-zA-Z _-]*?):\s*(.*)$}i',
-			array(&$this, '_callback'), $line);
+			array($this, '_callback'), $line);
+
+		if (strlen($line))
+			$line = preg_replace_callback(
+				'/^\s*(.+)$/', array($this, '_callback_nextline'), $line);
+
 		if (strlen($line)) $line .= "\n";
 		return $line;
 	}
@@ -81,6 +83,17 @@ class Markdown_Filter_MetaData extends Markdown_Filter
 		return '';
 	}
 
+	/**
+	 * @param array $matches A set of results of the `transform` function
+	 * @return string The text parsed
+	 */
+	protected function _callback_nextline($matches) 
+	{
+		$meta_key = array_search(end($this->metadata), $this->metadata );
+		$this->metadata[$meta_key] .= ' '.trim($matches[1]);
+		return '';
+	}
+
 	public function append($text)
 	{
 		$metadata = Markdown_Extended::getVar('metadata');
@@ -88,11 +101,13 @@ class Markdown_Filter_MetaData extends Markdown_Filter
 		if (!empty($metadata)) {
 			$metadata_str='';
 			foreach($metadata as $meta_name=>$meta_value) {
-				if (in_array($meta_name, $this->specials))
-					Markdown_Extended::setConfig($meta_name, $meta_value);
-				else
-					$metadata_str .= "\n".
-						$this->runGamut('tool:BuildMetaData', "$meta_name:$meta_value");
+				if (!empty($meta_name) && is_string($meta_name)) {
+					if (in_array($meta_name, $this->specials))
+						Markdown_Extended::setConfig($meta_name, $meta_value);
+					else
+						$metadata_str .= "\n".
+							$this->runGamut('tool:BuildMetaData', "$meta_name:$meta_value");
+				}
 			}
 			$text = $metadata_str."\n\n".$text;
 		}

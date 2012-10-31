@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_DefinitionList extends Markdown_Filter
 {
 
@@ -65,7 +62,7 @@ class Markdown_Filter_DefinitionList extends Markdown_Filter
 				(?>\A\n?|(?<=\n\n))
 				'.$whole_list_re.'
 			}mx',
-			array(&$this, '_callback'), $text);
+			array($this, '_callback'), $text);
 	}
 
 	/**
@@ -117,7 +114,7 @@ class Markdown_Filter_DefinitionList extends Markdown_Filter
 			(?=\n?[ ]{0,3}:[ ])				  # lookahead for following line feed 
 											            # with a definition mark.
 			}xm',
-			array(&$this, '_item_callback_dt'), $list_str);
+			array($this, '_item_callback_dt'), $list_str);
 
 		// Process actual definitions.
 		$list_str = preg_replace_callback('{
@@ -134,7 +131,7 @@ class Markdown_Filter_DefinitionList extends Markdown_Filter
 				)						
 			)					
 			}xm',
-			array(&$this, '_item_callback_dd'), $list_str);
+			array($this, '_item_callback_dd'), $list_str);
 
 		return $list_str;
 	}

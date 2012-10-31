@@ -16,15 +16,9 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_Anchor extends Markdown_Filter
 {
 	
-	/**
-	 * 
-	 */
 	public function _setup()
 	{
 		Markdown_Extended::setVar('in_anchor', false);
@@ -59,7 +53,7 @@ class Markdown_Filter_Anchor extends Markdown_Filter
 			  \]
 			)
 			}xs',
-			array(&$this, '_reference_callback'), $text);
+			array($this, '_reference_callback'), $text);
 
 		// Next, inline-style links: [link text](url "optional title")
 		$text = preg_replace_callback('{
@@ -84,7 +78,7 @@ class Markdown_Filter_Anchor extends Markdown_Filter
 			  \)
 			)
 			}xs',
-			array(&$this, '_inline_callback'), $text);
+			array($this, '_inline_callback'), $text);
 
 		// Last, handle reference-style shortcuts: [link text]
 		// These must come last in case you've also got [link text][1]
@@ -96,7 +90,7 @@ class Markdown_Filter_Anchor extends Markdown_Filter
 			  \]
 			)
 			}xs',
-			array(&$this, '_reference_callback'), $text);
+			array($this, '_reference_callback'), $text);
 
 		Markdown_Extended::setVar('in_anchor', false);
 		return $text;

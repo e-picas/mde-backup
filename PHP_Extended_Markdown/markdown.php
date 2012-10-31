@@ -26,6 +26,15 @@
 // Define the width of a tab for code blocks.
 @define( 'MARKDOWN_TAB_WIDTH',             4 );
 
+// Regex to match balanced [brackets].
+@define( 'MARKDOWN_NESTED_BRACKETS_DEPTH', 6 );
+
+// Regex to match balanced (parenthesis).
+@define( 'MARKDOWN_NESTED_URL_PARENTHESIS_DEPTH', 4 );
+
+// Table of hash values for escaped characters:
+@define( 'MARKDOWN_ESCAPE_CHARS',          '\`*_{}[]()>#+-.!:|' );
+
 // Optional title attribute for footnote links and backlinks.
 @define( 'MARKDOWN_FN_LINK_TITLE',         "See footnote %%" );
 @define( 'MARKDOWN_FN_BACKLINK_TITLE',     "Return to content" );
@@ -118,20 +127,20 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * Regex to match balanced [brackets].
 	 * Needed to insert a maximum bracked depth while converting to PHP.
 	 */
-	var $nested_brackets_depth = 6;
+	var $nested_brackets_depth = MARKDOWN_NESTED_BRACKETS_DEPTH;
 	var $nested_brackets_re;
 	
 	/**
 	 * Regex to match balanced (parenthesis).
 	 * Needed to insert a maximum bracked depth while converting to PHP.
 	 */
-	var $nested_url_parenthesis_depth = 4;
+	var $nested_url_parenthesis_depth = MARKDOWN_NESTED_URL_PARENTHESIS_DEPTH;
 	var $nested_url_parenthesis_re;
 
 	/**
 	 * Table of hash values for escaped characters:
 	 */
-	var $escape_chars = '\`*_{}[]()>#+-.!:|';
+	var $escape_chars = MARKDOWN_ESCAPE_CHARS;
 	var $escape_chars_re;
 
 	/**
@@ -225,11 +234,13 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * These are first executed commands
 	 */
 	var $document_gamut = array(
+		"stripMetaData"          	  => 1,
 		"doFencedCodeBlocks"          => 5,
 		"stripNotes"                  => 10,
 		"stripLinkDefinitions"        => 20,
 		"stripAbbreviations"          => 25,
 		"runBasicBlockGamut"          => 30,
+		"appendMetaData"          	  => 35,
 		"appendNotes"                 => 40,
 //		"doDebug"=>50,
 	);
@@ -3349,14 +3360,128 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 		return $text;
 	}
 
+	protected $metadata=array();
+	
+	protected static $inMetaData=0;
+	
+	// SPECIAL METADATA
+	var $specials = array(
+		'baseheaderlevel', 'quoteslanguage'
+	);
+
+	/**
+	 * @param string $text Text to parse
+	 * @return string The text parsed
+	 */
+	public function stripMetaData($text) 
+	{
+		$lines = preg_split('/\n/', $text);
+		$text='';
+		self::$inMetaData=1;
+		foreach ($lines as $line) {
+			if (self::$inMetaData===0) {
+				$text .= $line."\n";
+			} else {
+				$text .= self::_stripMetaData($line);
+				if (preg_match('/^$/', $line)) {
+					self::$inMetaData = 0;
+				}
+			}
+		}
+		return $text;
+	}
+
+	/**
+	 * @param string $text Text to parse
+	 * @return string The text parsed
+	 */
+	public function _stripMetaData($line) 
+	{
+		$line = preg_replace_callback(
+			'{^([a-zA-Z0-9][0-9a-zA-Z _-]*?):\s*(.*)$}i',
+			array($this, '_callbackMetaData'), $line);
+
+		if (strlen($line))
+			$line = preg_replace_callback(
+				'/^\s*(.+)$/', array($this, '_callbackMetaData_nextline'), $line);
+
+		if (strlen($line)) $line .= "\n";
+		return $line;
+	}
+
+	/**
+	 * @param array $matches A set of results of the `transform` function
+	 * @return string The text parsed
+	 */
+	protected function _callbackMetaData($matches) 
+	{
+		$meta_key = strtolower(str_replace(' ', '', $matches[1]));
+		$this->metadata[$meta_key] = trim($matches[2]);
+		return '';
+	}
+
+	/**
+	 * @param array $matches A set of results of the `transform` function
+	 * @return string The text parsed
+	 */
+	protected function _callbackMetaData_nextline($matches) 
+	{
+		$meta_key = array_search(end($this->metadata), $this->metadata );
+		$this->metadata[$meta_key] .= ' '.trim($matches[1]);
+		return '';
+	}
+
+	public function appendMetaData($text)
+	{
+		$metadata = $this->metadata;
+		$this->metadata=array();
+		if (!empty($metadata)) {
+			$metadata_str='';
+			foreach($metadata as $meta_name=>$meta_value) {
+				if (!empty($meta_name) && is_string($meta_name)) {
+					if (in_array($meta_name, $this->specials))
+						$this->specials[$meta_name] = $meta_value;
+					else
+						$metadata_str .= "\n".$this->doMetaData("$meta_name:$meta_value");
+				}
+			}
+			$text = $metadata_str."\n\n".$text;
+		}
+		return $text;
+	}
+
+	/**
+	 *
+	 * @param string $text The text to parse
+	 * @return string The text parsed
+	 */
+	public function doMetaData($text) 
+	{
+		return preg_replace_callback('{^([0-9a-zA-Z_-]*?):(.*)$}', 
+			array($this, '_doMetaDataCallback'), $text);
+	}
+
+	protected function _doMetaDataCallback($matches)
+	{
+		return self::buildMetaDataString( $matches[1], $matches[2] );
+	}
+
+	public function buildMetaDataString( $meta_name, $meta_value )
+	{
+		if ($meta_name=='title')
+			return "<title>$meta_value</title>";
+		else
+			return "<meta name=\"$meta_name\" value=\"$meta_value\" />";
+	}
+	
 	function header2Label($text) 
 	{
   	// strip all Markdown characters
-  	$text = str_replace( 
-  		array("'", '"', "?", "*", "`", "[", "]", "(", ")", "{", "}", "+", "-", ".", "!", "\n", "\r", "\t"), 
-  		"", strtolower($text) );
-  	// strip the rest for visual signification
-  	$text = str_replace( array("#", " ", "__", "/", "\\"), "_", $text );
+	  	$text = str_replace( 
+  			array("'", '"', "?", "*", "`", "[", "]", "(", ")", "{", "}", "+", "-", ".", "!", "\n", "\r", "\t"), 
+  			"", strtolower($text) );
+	  	// strip the rest for visual signification
+  		$text = str_replace( array("#", " ", "__", "/", "\\"), "_", $text );
 		// strip non-ascii characters
 		return preg_replace("/[^\x9\xA\xD\x20-\x7F]/", "", $text);
 	}

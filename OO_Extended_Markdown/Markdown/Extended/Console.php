@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Extended_Console 
 {
 
@@ -58,7 +55,8 @@ class Markdown_Extended_Console
 	{
 		$this->stdout = fopen('php://stdout', 'w');
 		$this->stdin = fopen('php://stdin', 'w');
-		if (php_sapi_name() != 'cli') exit('<!-- NOT IN CLI -->');
+		if (php_sapi_name() != 'cli') 
+			exit('<!-- NOT IN CLI -->');
 		self::getOptions();
 		if (empty($this->options) && empty($this->input)) 
 			self::error( "No argument found - nothing to do!" );
@@ -74,7 +72,8 @@ class Markdown_Extended_Console
 
 		$argv = $_SERVER['argv'];
 		$last = array_pop($argv);
-		while ($last && count($argv)>=1 && $last[0]!='-' && !in_array($last,$this->options)) {
+		while ($last && count($argv)>=1 && $last[0]!='-' && !in_array($last,$this->options)) 
+		{
 			$this->input[] = $last;
 			$last = array_pop($argv);
 		}
@@ -85,7 +84,8 @@ class Markdown_Extended_Console
 		foreach($this->options as $_opt_n=>$_opt_v) 
 		{
 			$opt_torun=false;
-			foreach(array($_opt_n, $_opt_n.':', $_opt_n.'::') as $_opt_item) {
+			foreach(array($_opt_n, $_opt_n.':', $_opt_n.'::') as $_opt_item) 
+			{
 				if (array_key_exists($_opt_item, self::$cli_options))
 					$opt_torun = self::$cli_options[$_opt_item];
 				elseif (in_array($_opt_item, self::$cli_options))
@@ -98,7 +98,8 @@ class Markdown_Extended_Console
 				self::info( "Unknown argument '$_opt_n'! (argument ignored)" );
 		}
 
-		if (!empty($this->input)) {
+		if (!empty($this->input)) 
+		{
 			if ($this->multi===true)
 				self::info( "Input files are setted on `".join(', ', $this->input)."`" );
 			else
@@ -108,8 +109,8 @@ class Markdown_Extended_Console
 
 	public function write( $str, $new_line=true )
 	{
-    fwrite($this->stdout, $str.( $new_line===true ? PHP_EOL : '' ));
-    fflush($this->stdout);
+    	fwrite($this->stdout, $str.( $new_line===true ? PHP_EOL : '' ));
+    	fflush($this->stdout);
 	}
 	
 	public function info( $str, $new_line=true )
@@ -140,20 +141,27 @@ class Markdown_Extended_Console
 	{
 		if ($this->verbose===true)
 			self::write( PHP_EOL.">>>> let's go for the parsing ...".PHP_EOL );
-		if (!empty($this->input)) {
-			if ($this->multi===true) {
+		if (!empty($this->input)) 
+		{
+			if ($this->multi===true) 
+			{
 				$myoutput = $this->output;
-				foreach($this->input as $_input) {
+				foreach($this->input as $_input) 
+				{
 					if (!empty($this->output))
 						$this->output = self::buildOutputFilename( $myoutput );
 					$_ok = self::runStoryOnOneFile($_input);
 				}
 				if ($this->verbose===true)
 					self::write( "  -------------------------------------------" );
-			} else {
+			} 
+			else 
+			{
 					$_ok = self::runStoryOnOneFile($this->input[0]);
 			}
-		} else {
+		} 
+		else 
+		{
 			self::error( "No input markdown file entered!" );
 		}
 		if ($this->verbose===true)
@@ -283,19 +291,28 @@ EOT;
 	public function runOneFile( $input, $output=null, $extract=null )
 	{
 		$return=null;
-		if (!empty($input)) {
+		if (!empty($input)) 
+		{
 			$num = self::$parsedfiles_counter;
 			if ($this->verbose===true)
 				self::write( "  -------------------------------------------" );
 			self::info( "[$num] >> parsing file `$input`" );
-			if ($md_content = self::getInput( $input )) {
-				if (!is_null($extract)) {
+			if ($md_content = self::getInput( $input )) 
+			{
+				if (!is_null($extract)) 
+				{
 					$return = self::extractContent( $md_content, $extract );
-				} else {
-					if ($md_parsed_content = self::parseContent( $md_content )) {
-						if (!empty($output)) {
+				} 
+				else 
+				{
+					if ($md_parsed_content = self::parseContent( $md_content )) 
+					{
+						if (!empty($output)) 
+						{
 							$return = self::writeOutputFile( $md_parsed_content, $output );
-						} else {
+						} 
+						else 
+						{
 							$return = self::writeOutput( $md_parsed_content );
 						}
 					}
@@ -309,16 +326,23 @@ EOT;
 	public function getInput( $input )
 	{
 		$md_content=null;
-		if (!empty($input)) {
-			if (@file_exists($input)) {
+		if (!empty($input)) 
+		{
+			if (@file_exists($input)) 
+			{
 				self::info( "Reading input file `$input`", false );
-				if ($md_content = @file_get_contents( $input )) {
+				if ($md_content = @file_get_contents( $input )) 
+				{
 					$this->md_content .= $md_content;
 					self::info( "OK [strlen: ".strlen($md_content)."]" );
-				} else {
+				} 
+				else 
+				{
 					self::error( "Could not open input file `$input`!" );
 				}
-			} else {
+			} 
+			else 
+			{
 				self::error( "Entered input markdown file `$input` not found!" );
 			}
 		}
@@ -328,12 +352,16 @@ EOT;
 	public function parseContent( $md_content )
 	{
 		$md_output=null;
-		if (!empty($md_content)) {
+		if (!empty($md_content)) 
+		{
 			self::info( "Parsing Mardkown content", false );
-			if ($md_output = Markdown($md_content, array('skip_filters'=>$this->nofilter))) {
+			if ($md_output = Markdown($md_content, array('skip_filters'=>$this->nofilter))) 
+			{
 				$this->md_parsed_content .= $md_output;
 				self::info("OK [strlen: ".strlen($md_output)."]");
-			} else {
+			} 
+			else 
+			{
 				self::error( "An error occured while trying to parse Markdown content ! (try to run `cd dir/to/markdown.php ...`)" );
 			}
 		}
@@ -343,22 +371,27 @@ EOT;
 	public function extractContent( $md_content, $extract )
 	{
 		$md_output=null;
-		if (!empty($md_content)) {
+		if (!empty($md_content)) 
+		{
 			self::info( "Extracting Mardkown metadata", false );
 			if ($ok = Markdown($md_content, array('special_gamut'=>array(
 				'filter:MetaData:strip'=>1
-			)))) {
+			)))) 
+			{
 				$metadata = Markdown_Extended::getVar('metadata');
 				self::info("OK [entries: ".count($metadata)."]");
 				$md_output = '';
-				foreach($metadata as $_metan=>$_metav) {
+				foreach($metadata as $_metan=>$_metav) 
+				{
 					if (is_string($extract)) {
 						if ($extract==$_metan) $md_output = $_metav;
 					} else {
 						$md_output .= PHP_EOL.$_metan.' : '.$_metav;
 					}
 				}
-			} else {
+			} 
+			else 
+			{
 				self::error( "An error occured while trying to extract data form Markdown content ! (try to run `cd dir/to/markdown.php ...`)" );
 			}
 		}
@@ -368,12 +401,16 @@ EOT;
 	public function writeOutputFile( $output, $output_file )
 	{
 		$fsize=null;
-		if (!empty($output) && !empty($output_file)) {
+		if (!empty($output) && !empty($output_file)) 
+		{
 			self::info( "Writing parsed content in output file `$output_file`", false );
-			if ($ok = @file_put_contents( $output_file, $output )) {
+			if ($ok = @file_put_contents( $output_file, $output )) 
+			{
 				$fsize = self::getFileSize( $output_file );
 				self::info( "OK [file size: $fsize]" );
-			} else {
+			} 
+			else 
+			{
 				self::error( "Can not write output file `$output_file` ! (try to run `sudo ...`)" );
 			}
 		}
@@ -383,7 +420,8 @@ EOT;
 	public function writeOutput( $output, $exit=false )
 	{
 		$clength=null;
-		if (!empty($output)) {
+		if (!empty($output)) 
+		{
 			$clength = strlen($output);
 			self::info( "Rendering parsed content [strlen: $clength]" );
 			if ($this->verbose===true)
@@ -397,16 +435,16 @@ EOT;
 	{
 		$size = @filesize($file);
 		if (empty($size)) return null;
-    if ($size < 1024) {
-      return $size .' B';
-    } elseif ($size < 1048576) {
-      return round($size / 1024, 2) .' KiB';
-    } elseif ($size < 1073741824) {
-      return round($size / 1048576, 2) . ' MiB';
-    } else {
-      return round($size / 1073741824, 2) . ' GiB';
-    }
-  }
+    	if ($size < 1024) {
+	      return $size .' B';
+    	} elseif ($size < 1048576) {
+	      return round($size / 1024, 2) .' KiB';
+    	} elseif ($size < 1073741824) {
+	      return round($size / 1048576, 2) . ' MiB';
+    	} else {
+	      return round($size / 1073741824, 2) . ' GiB';
+    	}
+	}
 
 	protected function buildOutputFilename( $filename )
 	{

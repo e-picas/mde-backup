@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_ListItem extends Markdown_Filter
 {
 
@@ -84,14 +81,14 @@ class Markdown_Filter_ListItem extends Markdown_Filter
 						^
 						'.$whole_list_re.'
 					}mx',
-					array(&$this, '_callback'), $text);
+					array($this, '_callback'), $text);
 			}
 			else {
 				$text = preg_replace_callback('{
 						(?:(?<=\n)\n|\A\n?) # Must eat the newline
 						'.$whole_list_re.'
 					}mx',
-					array(&$this, '_callback'), $text);
+					array($this, '_callback'), $text);
 			}
 		}
 
@@ -170,7 +167,7 @@ class Markdown_Filter_ListItem extends Markdown_Filter
 			(?:(\n+(?=\n))|\n)				# tailing blank line = $5
 			(?= \n* (\z | \2 ('.$marker_any_re.') (?:[ ]+|(?=\n))))
 			}xm',
-			array(&$this, '_items_callback'), $list_str);
+			array($this, '_items_callback'), $list_str);
 
 		self::$list_level--;
 		return $list_str;

@@ -16,15 +16,12 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 abstract class Markdown_Builder
 {
 
- /**
-  *
-  */
+	/**
+	 *
+	 */
 	abstract public function build($page,$hash);
 
 }

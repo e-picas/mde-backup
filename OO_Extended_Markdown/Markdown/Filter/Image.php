@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_Image extends Markdown_Filter
 {
 
@@ -48,7 +45,7 @@ class Markdown_Filter_Image extends Markdown_Filter
 
 			)
 			}xs', 
-			array(&$this, '_reference_callback'), $text);
+			array($this, '_reference_callback'), $text);
 
 		// Next, handle inline images:  ![alt text](url "optional title")
 		// Don't forget: encode * and _
@@ -75,7 +72,7 @@ class Markdown_Filter_Image extends Markdown_Filter
 			  \)
 			)
 			}xs',
-			array(&$this, '_inline_callback'), $text);
+			array($this, '_inline_callback'), $text);
 
 		return $text;
 	}

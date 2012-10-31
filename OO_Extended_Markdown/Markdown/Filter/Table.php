@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_Table extends Markdown_Filter
 {
 	
@@ -76,7 +73,7 @@ class Markdown_Filter_Table extends Markdown_Filter
 				)
 				(?=\n|\Z)					            # Stop at final double newline.
 			}xm',
-			array(&$this, '_callback'), $text);
+			array($this, '_callback'), $text);
 		
 		// Find tables without leading pipe.
 		$text = preg_replace_callback('
@@ -105,7 +102,7 @@ class Markdown_Filter_Table extends Markdown_Filter
 				)
 				(?=\n|\Z)					            # Stop at final double newline.
 			}xm',
-			array(&$this, '_callback'), $text);
+			array($this, '_callback'), $text);
 
 		return $text;
 	}

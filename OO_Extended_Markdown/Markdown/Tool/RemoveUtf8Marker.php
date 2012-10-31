@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Tool_RemoveUtf8Marker extends Markdown_Tool
 {
 	

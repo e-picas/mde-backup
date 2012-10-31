@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Tool_BuildMetaData extends Markdown_Tool
 {
 	
@@ -30,7 +27,7 @@ class Markdown_Tool_BuildMetaData extends Markdown_Tool
 	public function run($text) 
 	{
 		return preg_replace_callback('{^([0-9a-zA-Z_-]*?):(.*)$}', 
-			array(&$this, '_callback'), $text);
+			array($this, '_callback'), $text);
 	}
 
 	protected function _callback($matches)

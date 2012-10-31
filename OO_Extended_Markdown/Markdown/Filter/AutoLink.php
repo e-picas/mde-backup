@@ -16,9 +16,6 @@
  * <http://daringfireball.net/projects/markdown/>
  */
 
-/**
- *
- */
 class Markdown_Filter_AutoLink extends Markdown_Filter
 {
 	
@@ -31,7 +28,7 @@ class Markdown_Filter_AutoLink extends Markdown_Filter
 	public function transform($text) 
 	{
 		$text = preg_replace_callback('{<((https?|ftp|dict):[^\'">\s]+)>}i', 
-			array(&$this, '_url_callback'), $text);
+			array($this, '_url_callback'), $text);
 
 		// Email addresses: <address@domain.foo>
 		return preg_replace_callback('{
@@ -52,7 +49,7 @@ class Markdown_Filter_AutoLink extends Markdown_Filter
 			)
 			>
 			}xi',
-			array(&$this, '_email_callback'), $text);
+			array($this, '_email_callback'), $text);
 	}
 
 	/**
