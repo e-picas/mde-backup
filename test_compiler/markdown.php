@@ -28,12 +28,12 @@ define('OO_DIR', __DIR__.'/../OO_Extended_Markdown');
 // Markdown directory (for safe inclusions)
 @define('MARKDOWN_EXTENDED_DIR', __DIR__);
 
+// The compiled version of Markdwon
+@define('MARKDOWN_COMPILED_FILE', MARKDOWN_EXTENDED_DIR.'/OO_Extended_Markdown.compile.php');
+
 // -----------------------------------
 // LIBRARY
 // -----------------------------------
-
-// the global library
-require_once MARKDOWN_EXTENDED_DIR.'/OO_Extended_Markdown.compile.php';
 
 // requires PHP 5.1+
 if (version_compare(PHP_VERSION, '5.1.0', '<')) {
@@ -69,6 +69,46 @@ function Markdown_CLI() {
 	// Build documentation content
 	return $console->run();
 }
+
+function _scandir( $dir, $allowed_extension='php' ) {
+	$ctt=$alt_ctt='';
+	if (!@file_exists($dir))
+		trigger_error("Directory '$dir' does not exist!", E_USER_ERROR);
+	if (!@is_dir($dir))
+		trigger_error("'$dir' is not a directory!", E_USER_ERROR);
+	$d = scandir($dir);
+	if (false!==$d){
+		foreach ($d as $f) {
+			if (!in_array($f, array('.', '..'))){
+				$f_path = $dir.'/'.$f;
+				if (is_file($f_path) && end(explode('.', $f_path))==$allowed_extension){
+					$ctt .= _strip_php_tags( file_get_contents($f_path) );
+				} elseif (is_dir($f_path)) {
+					$alt_ctt .= _scandir( $f_path );
+				}
+			}
+		}		
+	}
+	return $ctt.$alt_ctt;
+}
+
+function _strip_php_tags( $str ) {
+	return str_replace(array('<?php','?>','// Endfile'), '', $str);
+}
+
+// -----------------------------------
+// COMPILATION AT RUNTIME
+// -----------------------------------
+
+// the global library
+if (!@file_exists(MARKDOWN_COMPILED_FILE)){
+	$_php = _scandir( realpath( OO_DIR.'/Markdown' ) );
+	$ok = file_put_contents( MARKDOWN_COMPILED_FILE, '<?php'.PHP_EOL.$_php);
+	if (false===$ok){
+		trigger_error("Can't write compiled file!", E_USER_ERROR);
+	}
+}
+require_once MARKDOWN_COMPILED_FILE;
 
 // -----------------------------------
 // COMMAND LINE INTERFACE

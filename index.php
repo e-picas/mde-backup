@@ -168,7 +168,7 @@ function emdreminders_popup(url){
 	<a href="index.php?type=ooextendedmarkdown">OO Extended Markdown</a> | 
 	<a href="index.php?type=doc">OO doc</a> | 
 	<a href="index.php?type=miniphpextendedmarkdown">PHP Extended Markdown minified (<em>if so ...</em>)</a> | 
-	<a href="index.php?type=compiledoomarkdown">PHP Extended Markdown compiled (<em>built at runtime ...</em>)</a> | 
+	<a href="index.php?type=compiledoomd">PHP Extended Markdown compiled (<em>built at runtime ...</em>)</a> | 
 	<a href="PHP_Extended_Markdown/markdown_reminders.html" onclick="return emdreminders_popup('PHP_Extended_Markdown/markdown_reminders.html');" title="Markdown syntax reminders (new floated window)" target="_blank">
     Markdown syntax reminders</a> 
 	 [ <a href="index.php?type=reminders" title="test the inclusion of the reminders in a full page">test inclusion</a> ]
