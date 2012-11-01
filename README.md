@@ -8,13 +8,13 @@
 
 Created by [John Gruber](http://daringfireball.net/projects/markdown/) in 2004, **Markdown** is, as he says:
 
-    a text-to-HTML conversion tool for web writers. Markdown allows you 
-    to write using an easy-to-read, easy-to-write plain text format, then convert it 
-    to structurally valid XHTML (or HTML).
+>    a text-to-HTML conversion tool for web writers. Markdown allows you 
+>    to write using an easy-to-read, easy-to-write plain text format, then convert it 
+>    to structurally valid XHTML (or HTML).
 
 As I would say, **Markdown** is a set of writing rules to build some human readable text contents, such as `.txt` common files, which can be parsed to build some HTML valid content, structurally and typographically.
 
-This syntax has become one of the most common standards of rich-text contents, used for example by [GitHub](http://github.com) as one of the proposed syntaxes for informational files.
+This syntax has become one of the most common standards of rich-text contents, used for example by [GitHub](http://github.com) as one of the proposed syntaxes for informational files (such like this one).
 
 
 ## A short history of Markdown
