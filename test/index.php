@@ -110,7 +110,15 @@ if (!empty($_GET) && isset($_GET['type'])) {
 			break;
 	}
 } else {
-	$md_content = 'Choose an entry in the above menu ...';
+	$md_content = '<div style="margin: 2em 10em;">'
+		.'<p><strong>Choose an entry in the above menu ...</strong></p>'
+		.'<p>To make a test of the command line interface, run:</p>'
+		.'<pre>
+~$ cd path/to/markdown.php
+~$ php markdown.php -x -o test/MD_Syntax_test.html test/MD_syntax.md
+</pre>'
+		.'<p>The result of the parsing must be in file "test/MD_Syntax_test.html".</p>'
+		.'</div>';
 }
 
 // ------------------------------

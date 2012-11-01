@@ -383,11 +383,14 @@ EOT;
 		if (!empty($md_content)) 
 		{
 			self::info( "Extracting Mardkown metadata", false );
+/*
 			if ($ok = Markdown($md_content, array('special_gamut'=>array(
 				'filter:MetaData:strip'=>1
 			)))) 
+*/
+			if ($parser = Markdown($md_content, true)) 
 			{
-				$metadata = PHP_Extended_Markdown::getVar('metadata');
+				$metadata = $parser->get('metadata');
 				self::info("OK [entries: ".count($metadata)."]");
 				$md_output = '';
 				foreach($metadata as $_metan=>$_metav) 

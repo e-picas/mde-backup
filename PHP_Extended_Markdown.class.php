@@ -109,6 +109,12 @@ class PHP_Extended_Markdown
 	static $class_version = '1.0';
 	static $class_sources = 'https://github.com/PieroWbmstr/Extended_Markdown';
 
+	/**
+	 * Registry of the parser stacks
+	 */
+	protected $stacks=array();
+	var $in_stack=false;
+
 	static function info( $html=false )
 	{
 		return 
@@ -121,6 +127,63 @@ class PHP_Extended_Markdown
 			.PHP_Extended_Markdown::$class_sources
 			.( $html ? '</a>' : '' )
 			.')';
+	}
+
+	/**
+	 * Debug function
+	 * WARNING: first argument is not used (to allow doDebug from Gamut functions)
+	 */
+	public function doDebug( $a='', $what=null, $exit=true ) 
+	{
+		echo '<pre>';
+		if (!is_null($what)) var_export($what);
+		else var_export( $this );
+		echo '</pre>';
+		if ($exit) exit(0);
+	}
+
+	/**
+	 * Get an object property value
+	 */	
+	public function get( $what, $default=null )
+	{
+		if (false===$this->in_stack) {
+			$_this = $this->getStack();			
+			return !is_null($_this) && property_exists($_this, $what) ? $_this->$what : $default;
+		} else {
+			return property_exists($this, $what) ? $this->$what : $default;
+		}
+	}
+
+	/**
+	 * Clear all object stacks
+	 */	
+	public function clearStacks()
+	{
+		$this->stacks[] = array();
+		return $this;
+	}
+
+	/**
+	 * Add a new stack
+	 */	
+	public function addStack( $_this )
+	{
+		$_this->clearStacks();
+		$this->stacks[] = $_this;
+		return $this;
+	}
+
+	/**
+	 * Get an object property value
+	 */	
+	public function getStack( $index=null )
+	{
+		if (is_null($index)) {
+			return count($this->stacks)>0 ? end($this->stacks) : null;
+		} else {
+			return isset($this->stacks[$index]) ? $this->stacks[$index] : null;
+		}
 	}
 
 }
@@ -322,19 +385,6 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	}
 	
 	/**
-	 * Debug function
-	 * WARNING: first argument is not used (to allow doDebug from Gamut functions)
-	 */
-	public function doDebug( $a='', $what=null, $exit=true ) 
-	{
-		echo '<pre>';
-		if (!is_null($what)) var_export($what);
-		else var_export( $this );
-		echo '</pre>';
-		if ($exit) exit(0);
-	}
-	
-	/**
 	 * Setting up Extra-specific variables.
 	 */
 	public function setup() 
@@ -377,6 +427,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 		$this->titles = array();
 		$this->attributes = array();
 		$this->html_hashes = array();
+		$this->in_stack=false;
 	}
 	
 	
@@ -398,6 +449,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	public function transform($text) 
 	{
 		$this->setup();
+		$this->in_stack=true;
 	
 		// Remove UTF-8 BOM and marker character in input, if present.
 		$text = preg_replace('{^\xEF\xBB\xBF|\x1A}', '', $text);
@@ -425,6 +477,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 			$text = $this->$method($text);
 		}
 
+		$this->addStack( clone $this );
 		$this->teardown();
 		return $text . "\n";
 	}
@@ -1959,7 +2012,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 */
 	protected function _doTable_callback($matches) 
 	{
-//self::doDebug($matches);
+//self::doDebug('',$matches);
 		// The head string may have a begin slash
 		$caption    = count($matches)>3 ? $matches[1] : null;
 		$head		    = count($matches)>3 ? preg_replace('/^ *[|]/m', '', $matches[2]) : preg_replace('/^ *[|]/m', '', $matches[1]);
@@ -3452,7 +3505,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	public function appendMetaData($text)
 	{
 		$metadata = $this->metadata;
-		$this->metadata=array();
+//		$this->metadata=array();
 		if (!empty($metadata)) {
 			$metadata_str='';
 			foreach($metadata as $meta_name=>$meta_value) {
