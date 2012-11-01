@@ -1,7 +1,7 @@
 <?php
 /**
  * PHP Extended Markdown
- * Copyright (c) 2004-2012 Pierre Cassat
+ * Copyright (c) 2012 Pierre Cassat
  *
  * original MultiMarkdown
  * Copyright (c) 2005-2009 Fletcher T. Penney
@@ -11,9 +11,13 @@
  * Copyright (c) 2004-2012 Michel Fortin  
  * <http://michelf.com/projects/php-markdown/>
  *
- * Original Markdown
+ * original Markdown
  * Copyright (c) 2004-2006 John Gruber  
  * <http://daringfireball.net/projects/markdown/>
+ *
+ * @package 	PHP_Extended_Markdown
+ * @license   	BSD
+ * @link      	https://github.com/PieroWbmstr/Extended_Markdown
  */
 
 // -----------------------------------
@@ -73,6 +77,21 @@
 
 // The default mask used for MetaData
 @define( 'MARKDOWN_METADATA_MASK',         '<meta name="%s" content="%s" />' );
+
+// Tags that are always treated as block tags
+@define( 'MARKDOWN_BLOCKS_TAGS_RE',        'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend' );
+
+// Tags treated as block tags only if the opening tag is alone on it's line
+@define( 'MARKDOWN_CONTEXT_BLOCKS_TAGS_RE','script|noscript|math|ins|del' );
+
+// Tags where markdown="1" default to span mode
+@define( 'MARKDOWN_CONTAIN_SPAN_TAGS_RE',  'p|h[1-6]|li|dd|dt|td|th|legend|address' );
+
+// Tags which must not have their contents modified, no matter where they appear
+@define( 'MARKDOWN_CLEAN_TAGS_RE',         'script|math' );
+
+// Tags that do not need to be closed
+@define( 'MARKDOWN_CLOSE_TAGS_RE',         'hr|img' );
 
 // -----------------------------------
 // CLASSES DEFINITIONS
@@ -242,7 +261,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 		// Process character escapes, code spans, and inline HTML in one shot.
 		"parseSpan"                => -30,
 //		"doDebug"=>4,
-		"doNotes" => 5,
+		"doNotes" 				   => 5,
 		// Process anchor and image tags. Images must come first,
 		// because ![foo][f] looks like an anchor.
 		"doImages"                 => 10,
@@ -281,7 +300,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	/**
 	 * Constructor function. Initialize the parser object.
 	 */
-	function PHP_Extended_Markdown_Parser() 
+	public function PHP_Extended_Markdown_Parser() 
 	{
 		$this->_initDetab();
 		$this->prepareItalicsAndBold();
@@ -296,7 +315,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 		
 		$this->escape_chars_re = '['.preg_quote($this->escape_chars).']';
 		
-		// Sort document, block, and span gamut in ascendent priority order.
+		// Sort document, block, and span gamuts in ascendent priority order
 		asort($this->document_gamut);
 		asort($this->block_gamut);
 		asort($this->span_gamut);
@@ -304,9 +323,9 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	
 	/**
 	 * Debug function
-	 * WARNING: first argument is not used (to allow deDebug from Gamut functions)
+	 * WARNING: first argument is not used (to allow doDebug from Gamut functions)
 	 */
-	function doDebug( $a='', $what=null, $exit=true ) 
+	public function doDebug( $a='', $what=null, $exit=true ) 
 	{
 		echo '<pre>';
 		if (!is_null($what)) var_export($what);
@@ -318,7 +337,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	/**
 	 * Setting up Extra-specific variables.
 	 */
-	function setup() 
+	public function setup() 
 	{
 		// Clear global hashes.
 		$this->urls = $this->predef_urls;
@@ -346,7 +365,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	/**
 	 * Clearing Extra-specific variables.
 	 */
-	function teardown() 
+	public function teardown() 
 	{
 		$this->footnotes = array();
 		$this->glossaries = array();
@@ -376,7 +395,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see teardown()
 	 * @see $document_gamut
 	 */
-	function transform($text) 
+	public function transform($text) 
 	{
 		$this->setup();
 	
@@ -429,7 +448,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see detab()
 	 * @see runBasicBlockGamut()
 	 */
-	function runBlockGamut($text) 
+	public function runBlockGamut($text) 
 	{
 		$text = $this->hashHTMLBlocks($text);
 		return $this->runBasicBlockGamut($text);
@@ -445,7 +464,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see $block_gamut
 	 * @see formParagraphs()
 	 */
-	function runBasicBlockGamut($text) 
+	public function runBasicBlockGamut($text) 
 	{
 		foreach ($this->block_gamut as $method => $priority) {
 			$text = $this->$method($text);
@@ -463,7 +482,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see $span_gamut
 	 * @see formParagraphs()
 	 */
-	function runSpanGamut($text) 
+	public function runSpanGamut($text) 
 	{
 		foreach ($this->span_gamut as $method => $priority) {
 			$text = $this->$method($text);
@@ -493,7 +512,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see _detab_callback()
 	 */
-	function detab($text) 
+	public function detab($text) 
 	{
 		$text = preg_replace_callback('/^.*\t.*$/m', array(&$this, '_detab_callback'), $text);
 		return $text;
@@ -505,7 +524,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param array $matches A set of results of the `detab()` function
 	 * @return string The line rebuilt
 	 */
-	function _detab_callback($matches) 
+	protected function _detab_callback($matches) 
 	{
 		$line = $matches[0];
 		$strlen = $this->utf8_strlen; // strlen function for UTF-8.
@@ -529,7 +548,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * function that will loosely count the number of UTF-8 characters with a
 	 * regular expression.
 	 */
-	function _initDetab() 
+	protected function _initDetab() 
 	{
 		if (function_exists($this->utf8_strlen)) return;
 		$this->utf8_strlen = create_function('$text', 'return preg_match_all(
@@ -543,7 +562,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param string $text The text to be parsed
 	 * @return string The text parsed
 	 */
-	function outdent($text) 
+	public function outdent($text) 
 	{
 		return preg_replace('/^(\t|[ ]{1,'.$this->tab_width.'})/m', '', $text);
 	}
@@ -568,7 +587,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see unhash()
 	 */
-	function hashPart($text, $boundary = 'X') 
+	public function hashPart($text, $boundary = 'X') 
 	{
 		// Swap back any tag hash found in $text so we do not have to `unhash`
 		// multiple times at the end.
@@ -587,7 +606,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return function Pass results of the `hashPart()` function
 	 * @see hashPart()
 	 */
-	function hashBlock($text) 
+	public function hashBlock($text) 
 	{
 		return $this->hashPart($text, 'B');
 	}
@@ -599,7 +618,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return function Pass results of the `_unhash_callback()` function
 	 * @see _unhash_callback()
 	 */
-	function unhash($text) 
+	public function unhash($text) 
 	{
 		return preg_replace_callback('/(.)\x1A[0-9]+\1/', array(&$this, '_unhash_callback'), $text);
 	}
@@ -608,7 +627,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param array $matches A set of results of the `unhash()` function
 	 * @return empty
 	 */
-	function _unhash_callback($matches) 
+	protected function _unhash_callback($matches) 
 	{
 		return $this->html_hashes[$matches[0]];
 	}
@@ -622,7 +641,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string Text parsed
 	 * @see hashPart()
 	 */
-	function hashClean($text) 
+	public function hashClean($text) 
 	{
 		return $this->hashPart($text, 'C');
 	}
@@ -643,7 +662,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see _stripLinkDefinitions_callback()
 	 * @todo Manage attributes (not working for now)
 	 */
-	function stripLinkDefinitions($text) 
+	public function stripLinkDefinitions($text) 
 	{
 		$less_than_tab = $this->tab_width - 1;
 		return preg_replace_callback('{
@@ -688,7 +707,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param array $matches A set of results of the `stripLinkDefinitions()` function
 	 * @return empty
 	 */
-	function _stripLinkDefinitions_callback($matches) 
+	protected function _stripLinkDefinitions_callback($matches) 
 	{
 		$link_id = strtolower($matches[1]);
 		$url = $matches[2] == '' ? $matches[3] : $matches[2];
@@ -706,28 +725,27 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	/**
 	 * Tags that are always treated as block tags:
 	 */
-	var $block_tags_re = 'p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|address|form|fieldset|iframe|hr|legend';
+	var $block_tags_re = MARKDOWN_BLOCKS_TAGS_RE;
 	
 	/**
 	 * Tags treated as block tags only if the opening tag is alone on it's line:
 	 */
-	var $context_block_tags_re = 'script|noscript|math|ins|del';
+	var $context_block_tags_re = MARKDOWN_CONTEXT_BLOCKS_TAGS_RE;
 	
 	/**
 	 * Tags where markdown="1" default to span mode:
 	 */
-	var $contain_span_tags_re = 'p|h[1-6]|li|dd|dt|td|th|legend|address';
+	var $contain_span_tags_re = MARKDOWN_CONTAIN_SPAN_TAGS_RE;
 	
 	/**
 	 * Tags which must not have their contents modified, no matter where they appear
 	 */
-	var $clean_tags_re = 'script|math';
+	var $clean_tags_re = MARKDOWN_CLEAN_TAGS_RE;
 	
 	/**
 	 * Tags that do not need to be closed.
 	 */
-	var $auto_close_tags_re = 'hr|img';
-	
+	var $auto_close_tags_re = MARKDOWN_CLOSE_TAGS_RE;
 
 	/**
 	 * Hashify HTML Blocks and "clean tags".
@@ -748,7 +766,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see _hashHTMLBlocks_inMarkdown()
 	 */
-	function hashHTMLBlocks($text) 
+	public function hashHTMLBlocks($text) 
 	{
 		// Call the HTML-in-Markdown hasher.
 		list($text, ) = $this->_hashHTMLBlocks_inMarkdown($text);
@@ -788,7 +806,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see hashPart()
 	 * @see _hashHTMLBlocks_inHTML()
 	 */
-	function _hashHTMLBlocks_inMarkdown($text, $indent = 0, $enclosing_tag_re = '', $span = false)
+	protected function _hashHTMLBlocks_inMarkdown($text, $indent = 0, $enclosing_tag_re = '', $span = false)
 	{
 		if ($text === '') return array('', '');
 
@@ -989,7 +1007,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return array ( processed text , remaining text )
 	 * @see _hashHTMLBlocks_inMarkdown()
 	 */
-	function _hashHTMLBlocks_inHTML($text, $hash_method, $md_attr) 
+	protected function _hashHTMLBlocks_inHTML($text, $hash_method, $md_attr) 
 	{
 		if ($text === '') return array('', '');
 		
@@ -1150,7 +1168,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see handleSpanToken()
 	 */
-	function parseSpan($str) 
+	public function parseSpan($str) 
 	{
 		$output = '';
 		
@@ -1210,7 +1228,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see hashPart()
 	 */
-	function handleSpanToken($token, &$str) 
+	public function handleSpanToken($token, &$str) 
 	{
 		switch ($token{0}) {
 			case "\\":
@@ -1257,7 +1275,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see _doHeaders_callback_setext()
 	 * @see _doHeaders_callback_atx()
 	 */
-	function doHeaders($text) 
+	public function doHeaders($text) 
 	{
 		// Setext-style headers:
 		$text = preg_replace_callback(
@@ -1298,7 +1316,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see runSpanGamut()
 	 * @see hashBlock()
 	 */
-	function _doHeaders_callback_setext($matches) 
+	protected function _doHeaders_callback_setext($matches) 
 	{
 		if ($matches[3] == '-' && preg_match('{^- }', $matches[1]))
 			return $matches[0];
@@ -1322,7 +1340,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see runSpanGamut()
 	 * @see hashBlock()
 	 */
-	function _doHeaders_callback_atx($matches) 
+	protected function _doHeaders_callback_atx($matches) 
 	{
 		$level = strlen($matches[1]);
 		if (!empty($matches[3]))
@@ -1339,7 +1357,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param str $attr The attributes string
 	 * @return string Text to add in the header tag
 	 */
-	function _doHeaders_attr($attr) 
+	protected function _doHeaders_attr($attr) 
 	{
 		if (empty($attr))  return "";
 		return " id=\"$attr\"";
@@ -1357,7 +1375,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see _doCodeBlocks_callback()
 	 */
-	function doCodeBlocks($text) 
+	public function doCodeBlocks($text) 
 	{
 		return preg_replace_callback('{
 				(?:\n\n|\A\n?)
@@ -1379,7 +1397,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string Text parsed
 	 * @see hashBlock()
 	 */
-	function _doCodeBlocks_callback($matches) 
+	protected function _doCodeBlocks_callback($matches) 
 	{
 		$codeblock = $matches[1];
 
@@ -1400,7 +1418,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see hashPart()
 	 */
-	function makeCodeSpan($code) 
+	public function makeCodeSpan($code) 
 	{
 		$code = htmlspecialchars(trim($code), ENT_NOQUOTES);
 		return $this->hashPart("<code>$code</code>");
@@ -1418,7 +1436,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see _doBlockQuotes_callback()
 	 */
-	function doBlockQuotes($text) 
+	public function doBlockQuotes($text) 
 	{
 		return preg_replace_callback('/
 			  (								# Wrap whole match in $1
@@ -1442,7 +1460,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see runBlockGamut()
 	 * @see _doBlockQuotes_callback2()
 	 */
-	function _doBlockQuotes_callback($matches) 
+	protected function _doBlockQuotes_callback($matches) 
 	{
 		$bq = $matches[1];
 		$cite = $matches[2];
@@ -1466,7 +1484,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param array $matches A set of results of the `_doBlockQuotes_callback()` function
 	 * @return string The text parsed
 	 */
-	function _doBlockQuotes_callback2($matches) 
+	protected function _doBlockQuotes_callback2($matches) 
 	{
 		$pre = $matches[1];
 		$pre = preg_replace('/^  /m', '', $pre);
@@ -1487,7 +1505,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see _doAnchors_inline_callback()
 	 * @see _doAnchors_reference_callback()
 	 */
-	function doAnchors($text) 
+	public function doAnchors($text) 
 	{
 		if ($this->in_anchor) return $text;
 		$this->in_anchor = true;
@@ -1557,7 +1575,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see runSpanGamut()
 	 * @see hashPart()
 	 */
-	function _doAnchors_reference_callback($matches) 
+	protected function _doAnchors_reference_callback($matches) 
 	{
 		$whole_match =  $matches[1];
 		$link_text   =  $matches[2];
@@ -1603,7 +1621,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see runSpanGamut()
 	 * @see hashPart()
 	 */
-	function _doAnchors_inline_callback($matches) 
+	protected function _doAnchors_inline_callback($matches) 
 	{
 		$whole_match	=  $matches[1];
 		$link_text		=  $this->runSpanGamut($matches[2]);
@@ -1637,7 +1655,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see _doImages_reference_callback()
 	 * @see _doImages_inline_callback()
 	 */
-	function doImages($text) 
+	public function doImages($text) 
 	{
 		// First, handle reference-style labeled images: ![alt text][id]
 		$text = preg_replace_callback('{
@@ -1693,7 +1711,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see encodeAttribute()
 	 * @see hashPart()
 	 */
-	function _doImages_reference_callback($matches) 
+	protected function _doImages_reference_callback($matches) 
 	{
 		$whole_match = $matches[1];
 		$alt_text    = $matches[2];
@@ -1732,7 +1750,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see encodeAttribute()
 	 * @see hashPart()
 	 */
-	function _doImages_inline_callback($matches) 
+	protected function _doImages_inline_callback($matches) 
 	{
 		$whole_match	= $matches[1];
 		$alt_text		  = $matches[2];
@@ -1762,7 +1780,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see _doAutoLinks_url_callback()
 	 * @see _doAutoLinks_email_callback()
 	 */
-	function doAutoLinks($text) 
+	public function doAutoLinks($text) 
 	{
 		$text = preg_replace_callback('{<((https?|ftp|dict):[^\'">\s]+)>}i', 
 			array(&$this, '_doAutoLinks_url_callback'), $text);
@@ -1795,7 +1813,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see encodeAttribute()
 	 * @see hashPart()
 	 */
-	function _doAutoLinks_url_callback($matches) 
+	protected function _doAutoLinks_url_callback($matches) 
 	{
 		$url = $this->encodeAttribute($matches[1]);
 		$link = "<a href=\"$url\">$url</a>";
@@ -1808,7 +1826,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see encodeEmailAddress()
 	 * @see hashPart()
 	 */
-	function _doAutoLinks_email_callback($matches) 
+	protected function _doAutoLinks_email_callback($matches) 
 	{
 		$address = $matches[1];
 		$link = $this->encodeEmailAddress($address);
@@ -1846,7 +1864,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @todo Manage separated body of a table (cf. MultiMD)
 	 * @todo What is "colgroup" ? (cf. MultiMD)
 	 */
-	function doTables($text) 
+	public function doTables($text) 
 	{
 		$less_than_tab = $this->tab_width - 1;
 
@@ -1920,7 +1938,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see doTable()
 	 * @see _DoTable_callback()
 	 */
-	function _doTable_leadingPipe_callback($matches) 
+	protected function _doTable_leadingPipe_callback($matches) 
 	{
 		$head		    = $matches[1];
 		$underline	= $matches[2];
@@ -1939,7 +1957,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see runSpanGamut()
 	 * @see parseSpan()
 	 */
-	function _doTable_callback($matches) 
+	protected function _doTable_callback($matches) 
 	{
 //self::doDebug($matches);
 		// The head string may have a begin slash
@@ -2063,7 +2081,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see _doLists_callback()
 	 */
-	function doLists($text) 
+	public function doLists($text) 
 	{
 		$less_than_tab = $this->tab_width - 1;
 
@@ -2133,7 +2151,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see processListItems()
 	 * @see hashBlock()
 	 */
-	function _doLists_callback($matches) 
+	protected function _doLists_callback($matches) 
 	{
 		// Re-usable patterns to match list item bullets and number markers:
 		$marker_ul_re  = '[*+-]';
@@ -2182,7 +2200,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The list string parsed
 	 * @see _processListItems_callback()
 	 */
-	function processListItems($list_str, $marker_any_re) 
+	public function processListItems($list_str, $marker_any_re) 
 	{
 		$this->list_level++;
 
@@ -2213,7 +2231,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see doLists()
 	 * @see outdent()
 	 */
-	function _processListItems_callback($matches) 
+	protected function _processListItems_callback($matches) 
 	{
 		$item = $matches[4];
 		$leading_line =& $matches[1];
@@ -2250,7 +2268,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see _doDefLists_callback()
 	 */
-	function doDefLists($text) 
+	public function doDefLists($text) 
 	{
 		$less_than_tab = $this->tab_width - 1;
 
@@ -2299,7 +2317,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see doDefLists()
 	 * @see processDefListItems()
 	 */
-	function _doDefLists_callback($matches) 
+	protected function _doDefLists_callback($matches) 
 	{
 		// Re-usable patterns to match list item bullets and number markers:
 		$list = $matches[1];
@@ -2319,7 +2337,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see _processDefListItems_callback_dt()
 	 * @see _processDefListItems_callback_dd()
 	 */
-	function processDefListItems($list_str) 
+	public function processDefListItems($list_str) 
 	{
 		$less_than_tab = $this->tab_width - 1;
 		
@@ -2368,7 +2386,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see processDefListItems()
 	 * @see runSpanGamut()
 	 */
-	function _processDefListItems_callback_dt($matches) 
+	protected function _processDefListItems_callback_dt($matches) 
 	{
 		$terms = explode("\n", trim($matches[1]));
 		$text = '';
@@ -2387,11 +2405,11 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see processDefListItems()
 	 * @see runSpanGamut()
 	 */
-	function _processDefListItems_callback_dd($matches) 
+	protected function _processDefListItems_callback_dd($matches) 
 	{
 		$leading_line	= $matches[1];
 		$marker_space	= $matches[2];
-		$def			    = $matches[3];
+		$def			= $matches[3];
 
 		if ($leading_line || preg_match('/\n{2,}/', $def)) {
 			// Replace marker with the appropriate whitespace indentation
@@ -2423,7 +2441,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see _doFencedCodeBlocks_callback()
 	 */
-	function doFencedCodeBlocks($text) 
+	public function doFencedCodeBlocks($text) 
 	{
 		$less_than_tab = $this->tab_width;
 		
@@ -2453,7 +2471,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see _doFencedCodeBlocks_newlines()
 	 * @see hashBlock()
 	 */
-	function _doFencedCodeBlocks_callback($matches) 
+	protected function _doFencedCodeBlocks_callback($matches) 
 	{
 		$codeblock = $matches[3];
 		$language  = $matches[2];
@@ -2471,7 +2489,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param array $matches Results form the `doFencedCodeBlocks()` function (passed from the `_doFencedCodeBlocks_callback()` function)
 	 * @return string The block parsed
 	 */
-	function _doFencedCodeBlocks_newlines($matches) 
+	protected function _doFencedCodeBlocks_newlines($matches) 
 	{
 		return str_repeat( "<br$this->empty_element_suffix", strlen($matches[0]) );
 	}
@@ -2509,7 +2527,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	/**
 	 * Prepare regular expressions for searching emphasis tokens in any context.
 	 */
-	function prepareItalicsAndBold() 
+	public function prepareItalicsAndBold() 
 	{
 		foreach ($this->em_relist as $em => $em_re) {
 			foreach ($this->strong_relist as $strong => $strong_re) {
@@ -2534,7 +2552,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see runSpanGamut()
 	 * @see hashPart()
 	 */
-	function doItalicsAndBold($text) 
+	public function doItalicsAndBold($text) 
 	{
 		$token_stack = array('');
 		$text_stack = array('');
@@ -2662,7 +2680,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see hashBlock()
 	 */
-	function doHorizontalRules($text) 
+	public function doHorizontalRules($text) 
 	{
 		// Do Horizontal Rules:
 		return preg_replace(
@@ -2690,7 +2708,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see _doHardBreaks_callback()
 	 */
-	function doHardBreaks($text) 
+	public function doHardBreaks($text) 
 	{
 		// Do hard breaks:
 		return preg_replace_callback('/ {2,}\n/', array(&$this, '_doHardBreaks_callback'), $text);
@@ -2701,7 +2719,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see hashPart()
 	 */
-	function _doHardBreaks_callback($matches) 
+	protected function _doHardBreaks_callback($matches) 
 	{
 		return $this->hashPart("<br$this->empty_element_suffix\n");
 	}
@@ -2719,7 +2737,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see runSpanGamut()
 	 * @see unhash()
 	 */
-	function formParagraphs($text) 
+	public function formParagraphs($text) 
 	{
 		// Strip leading and trailing lines:
 		$text = preg_replace('/\A\n+|\n+\z/', '', $text);
@@ -2761,7 +2779,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see _stripFootnotes_callback()
 	 */
-	function stripNotes($text) 
+	public function stripNotes($text) 
 	{
 		$this->written_notes = array();
 		$less_than_tab = $this->tab_width - 1;
@@ -2814,7 +2832,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see outdent()
 	 */
-	function _stripNotes_callback($matches) 
+	protected function _stripNotes_callback($matches) 
 	{
 		if (0 != preg_match('/^(<p>)?glossary:/i', $matches[2])) {
 			$this->glossaries[ $this->fng_id_prefix . $matches[1] ] = $this->outdent($matches[2]);
@@ -2833,7 +2851,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param string $text The text to parse
 	 * @return string The text parsed
 	 */
-	function doNotes($text) 
+	public function doNotes($text) 
 	{
 		if (!$this->in_anchor) {
 			$text = preg_replace('{\[\^(.+?)\]}', "F\x1Afn:\\1\x1A:", $text);
@@ -2867,7 +2885,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see encodeAttribute()
 	 * @see runBlockGamut()
 	 */
-	function appendNotes($text) 
+	public function appendNotes($text) 
 	{
 		// First loop for references
 		if (!empty($this->notes_ordered)) 
@@ -2924,7 +2942,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see encodeAttribute()
 	 * @see runBlockGamut()
 	 */
-	function _doFootnote($note_id) 
+	protected function _doFootnote($note_id) 
 	{
 		$text='';
 		if (!empty($this->footnotes[$note_id])) 
@@ -2967,7 +2985,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see encodeAttribute()
 	 * @see runBlockGamut()
 	 */
-	function _doGlossary($note_id) 
+	protected function _doGlossary($note_id) 
 	{
 		$text='';
 		if (!empty($this->glossaries[$note_id])) 
@@ -3018,7 +3036,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see encodeAttribute()
 	 * @see runBlockGamut()
 	 */
-	function _doCitation($note_id) 
+	protected function _doCitation($note_id) 
 	{
 		$text='';
 		if (!empty($this->citations[$note_id])) 
@@ -3066,7 +3084,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param array $matches Results form the `appendGlossaries` function
 	 * @return string The text parsed
 	 */
-	function _doGlossary_callback($matches)
+	protected function _doGlossary_callback($matches)
 	{
 		return 
 			"<span class=\"glossary name\">".trim($matches[1])."</span>"
@@ -3081,7 +3099,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param array $matches Results form the `appendGlossaries` function
 	 * @return string The text parsed
 	 */
-	function _doCitation_callback($matches)
+	protected function _doCitation_callback($matches)
 	{
 		return 
 			"<span class=\"bibliography name\">".trim($matches[1])."</span>"."\n\n".$matches[2];
@@ -3094,7 +3112,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see encodeAttribute()
 	 */
-	function _appendNotes_callback($matches) 
+	protected function _appendNotes_callback($matches) 
 	{
 		// Create footnote marker only if it has a corresponding footnote *and*
 		// the footnote hasn't been used by another marker.
@@ -3180,7 +3198,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see _doAbbreviations_callback()
 	 */
-	function doAbbreviations($text) 
+	public function doAbbreviations($text) 
 	{
 		if ($this->abbr_word_re) {
 			// cannot use the /x modifier because abbr_word_re may 
@@ -3203,7 +3221,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @see hashPart()
 	 * @see encodeAttribute()
 	 */
-	function _doAbbreviations_callback($matches) 
+	protected function _doAbbreviations_callback($matches) 
 	{
 		$abbr = $matches[0];
 		if (isset($this->abbr_desciptions[$abbr])) {
@@ -3228,7 +3246,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @return string The text parsed
 	 * @see _stripAbbreviations_callback()
 	 */
-	function stripAbbreviations($text) 
+	public function stripAbbreviations($text) 
 	{
 		$less_than_tab = $this->tab_width - 1;
 		return preg_replace_callback('{
@@ -3245,7 +3263,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param array $matches Results from the `stripAbbreviations()` function
 	 * @return string The text parsed
 	 */
-	function _stripAbbreviations_callback($matches) 
+	protected function _stripAbbreviations_callback($matches) 
 	{
 		$abbr_word = $matches[1];
 		$abbr_desc = $matches[2];
@@ -3279,7 +3297,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param string $addr The email address to encode
 	 * @return string The encoded address
 	 */
-	function encodeEmailAddress($addr) 
+	public function encodeEmailAddress($addr) 
 	{
 		$addr = "mailto:" . $addr;
 		$chars = preg_split('/(?<!^)(?!$)/', $addr);
@@ -3311,7 +3329,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param string $attributes The attributes to parse
 	 * @return string The attributes processed
 	 */
-	function doAttributes($attributes)
+	public function doAttributes($attributes)
 	{
 		return preg_replace('{
 			(\S+)=
@@ -3330,7 +3348,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param string $text The attributes content
 	 * @return string The attributes content processed
 	 */
-	function encodeAttribute($text) 
+	public function encodeAttribute($text) 
 	{
 		$text = $this->encodeAmpsAndAngles($text);
 		$text = str_replace('"', '&quot;', $text);
@@ -3345,7 +3363,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 	 * @param string $text The text to encode
 	 * @return string The encoded text
 	 */
-	function encodeAmpsAndAngles($text) 
+	public function encodeAmpsAndAngles($text) 
 	{
 		if ($this->no_entities) {
 			$text = str_replace('&', '&amp;', $text);
@@ -3476,7 +3494,7 @@ class PHP_Extended_Markdown_Parser extends PHP_Extended_Markdown
 			return sprintf(MARKDOWN_METADATA_MASK, $meta_name, $meta_value);
 	}
 	
-	function header2Label($text) 
+	public function header2Label($text) 
 	{
   	// strip all Markdown characters
 	  	$text = str_replace( 

@@ -1,7 +1,7 @@
 <?php
 /**
  * PHP Extended Markdown
- * Copyright (c) 2004-2012 Pierre Cassat
+ * Copyright (c) 2012 Pierre Cassat
  *
  * original MultiMarkdown
  * Copyright (c) 2005-2009 Fletcher T. Penney
@@ -14,8 +14,17 @@
  * original Markdown
  * Copyright (c) 2004-2006 John Gruber  
  * <http://daringfireball.net/projects/markdown/>
+ *
+ * @package 	PHP_Extended_Markdown
+ * @license   	BSD
+ * @link      	https://github.com/PieroWbmstr/Extended_Markdown
+ *
  */
 
+/**
+ * To use this command line interface, just run:
+ *    ~$ php markdown.php --help
+ */
 class PHP_Extended_Markdown_Console 
 {
 
