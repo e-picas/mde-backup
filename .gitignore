@@ -5,4 +5,6 @@ Thumbs.db
 ehthumbs.db
 Icon
 MD_test.md
-build/*
+work/*
+build/generated/*
+build/phpdoc/*

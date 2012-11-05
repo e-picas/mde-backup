@@ -1,4 +1,4 @@
-Title:   A Sample MultiMarkdown Document  
+Title:   A Sample MultiMarkdown Document   - test TROIS
 Author:  Pierre Cassat  
 Date:    February 20, 2012  
 Comment: This is a comment intended to demonstrate
@@ -52,7 +52,7 @@ A code span: `` `function()` `` (example: `function()`)
 
 ## Links and images
 
-Automatic links: `<http://example.com/>` and `<address@email.com>` (example: <http://example.com/> and <address@email.com>)
+Automatic links: `<http://example.com/>` and `<addres@email.com>` (example: <http://example.com/> and <addres@email.com>)
 
 An hypertext link: `[link text](http://example.com/ "Optional link title")` (example: [link text](http://example.com/ "Optional link title"))
 
@@ -108,7 +108,7 @@ My code here
 
 ## Typography
 
-Allowing underscores in emphasis: `__my_underscored_bold_word__` (example: __my_underscored_bold_word__)
+Allowing underscores in emphasis: `__my_undersoced_bold_word__` (example: __my_undersoced_bold_word__)
 
 
 ## Links and images
@@ -197,14 +197,14 @@ A footnote:
 
     [^1]: And that's the footnote.
 
-Example: That's some[^2] text with three footnotes.[^1][^3]
+Example: That's some[^2] text with a footnote.[^1][^3]
 
-[^1]: And that's the first footnote.
+[^1]: And that's the footnote.
 
     That's the second paragraph.
 
-[^2]: And that's another footnote (the second)
-	on *two lines* for test ...
+[^2]: And that's another footnote
+	on *two lines* to test ...
 
 [^3]: And that's a footnote [with a link](http://example.com).
 

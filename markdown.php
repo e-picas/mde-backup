@@ -33,16 +33,35 @@ require_once __DIR__."/PHP_Extended_Markdown.class.php";
 /**
  * Initialize the parser and return the result of its transform method
  * @param string $text A Markdown text to parse
+ * @param string|array $options A set of options to extend defaults, or a config file path
  * @param bool $return_parser Set to TRUE to get the parser object
  * @return misc Parsed string or the parser itself
  * @see PHP_Extended_Markdown_Parser
  */
-function Markdown( $text, $return_parser=false ) {
+function Markdown( $text, $options=null, $return_parser=false ) {
 	// setup static parser variable
 	static $parser;
 	if (!isset($parser)) {
-		$parser = new PHP_Extended_Markdown_Parser;
+		$parser = new PHP_Extended_Markdown( $options );
 	}
+	// transform text using the parser
+	$_md = $parser->transform($text);
+	//$parser->doDebug();
+	// returns parser or transformed text
+	return true===$return_parser ? $parser : $_md;
+}
+
+/**
+ * Initialize a unique instance of the parser and return the result of its transform method
+ * @param string $text A Markdown text to parse
+ * @param string|array $options A set of options to extend defaults, or a config file path
+ * @param bool $return_parser Set to TRUE to get the parser object
+ * @return misc Parsed string or the parser itself
+ * @see PHP_Extended_Markdown_Parser
+ */
+function MarkdownAsSingleton( $text, $options=null, $return_parser=false ) {
+	// setup static parser variable
+	$parser =& PHP_Extended_Markdown::getInstance( $options );
 	// transform text using the parser
 	$_md = $parser->transform($text);
 	//$parser->doDebug();
@@ -55,23 +74,15 @@ function Markdown( $text, $return_parser=false ) {
  * @return misc The result of the Extended Markdown command line interface
  * @see PHP_Extended_Markdown_Console
  */
-function Markdown_CLI() {
+function MarkdownCommandLine() {
 	// setup static console variable
 	static $console;
 	if (!isset($console)) {
+		require_once __DIR__."/PHP_Extended_Markdown_Console.class.php";
 		$console = new PHP_Extended_Markdown_Console;
 	}
 	// run the interface
 	return $console->run();
-}
-
-// -----------------------------------
-// COMMAND LINE INTERFACE
-// -----------------------------------
-
-if (php_sapi_name() == 'cli') {
-	require_once __DIR__."/PHP_Extended_Markdown_Console.class.php";
-	Markdown_CLI();
 }
 
 // Endfile

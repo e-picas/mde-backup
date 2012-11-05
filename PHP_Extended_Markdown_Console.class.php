@@ -28,22 +28,30 @@
 class PHP_Extended_Markdown_Console 
 {
 
-	public $stdout; //stdout
-	public $stdin;  //stdin
-
+	protected $stdout; //stdout
+	protected $stdin;  //stdin
+	protected static $emd_instance; // PHP Extended Markdown instance
 	protected $md_content='';
 	protected $md_parsed_content='';
 
+	/**#@+
+	 * Command line options values
+	 */
 	protected $input         =array();
 	protected $verbose       =false;
 	protected $quiet         =false;
 	protected $output        =false;
 	protected $multi         =false;
+	protected $config        =false;
 	protected $filter_html   =false;
 	protected $filter_styles =false;
 	protected $nofilter      =false;
 	protected $extract       =false;
+	/**#@-*/
 
+	/**#@+
+	 * Command line options
+	 */
 	protected $options;
 	static $cli_options = array(
 		'v'=>'version', 
@@ -52,14 +60,25 @@ class PHP_Extended_Markdown_Console
 		'q'=>'quiet', 
 		'o:'=>'output:', 
 		'm'=>'multi', 
+		'c:'=>'config:', 
+		'g::'=>'gamuts::', 
 		'filter-html', 
 		'filter-styles', 
 		'nofilter:', 
 		'extract::'
 	);
+	/**#@-*/
 
+	/**
+	 * Internal counter
+	 */
 	static $parsedfiles_counter=1;
 
+	/**
+	 * Constructor
+	 * Setup the input/output, verify that we are in CLI mode and that something is requested
+	 * @see self::runOptions()
+	 */
 	public function __construct()
 	{
 		$this->stdout = fopen('php://stdout', 'w');
@@ -72,6 +91,69 @@ class PHP_Extended_Markdown_Console
 		self::runOptions();
 	}
 
+// -------------------
+// Writing methods
+// -------------------
+
+	/**
+	 * Write an info to CLI output
+	 * @param string $str The information to write
+	 * @param bool $new_line May we pass a line after writing the info
+	 */
+	protected function write( $str, $new_line=true )
+	{
+    	fwrite($this->stdout, $str.( $new_line===true ? PHP_EOL : '' ));
+    	fflush($this->stdout);
+	}
+	
+	/**
+	 * Write an info in verbose mode
+	 * @param string $str The information to write
+	 * @param bool $new_line May we pass a line after writing the info
+	 */
+	protected function info( $str, $new_line=true )
+	{
+		if ($this->verbose===true) self::write( ". ".$str." ...", $new_line );
+	}
+	
+	/**
+	 * Write an error info and exit
+	 * @param string $str The information to write
+	 * @param int $code The error code used to exit the script
+	 */
+	protected function error( $str, $code=1 )
+	{
+		if ($this->quiet===true)
+			self::write( $str );
+		else {
+			self::write( PHP_EOL.">> ".$str.PHP_EOL );
+			self::write( "( run '--help' option to get information )" );
+		}
+		if ($code>0) {
+			self::endRun();
+			exit($code);
+		}
+	}
+	
+	/**
+	 * Write an info and exit
+	 * @param bool $exit May we have to exit the script after writing the info?
+	 * @param string $str The information to write
+	 */
+	private function endRun( $exit=false, $str=null )
+	{
+		if ($this->quiet===true) ini_restore('error_reporting'); 
+		if (!empty($str)) self::write( $str );
+		if ($exit==true) exit(0);
+	}
+
+// -------------------
+// Options
+// -------------------
+
+	/**
+	 * Get the command line user options
+	 */
 	protected function getOptions()
 	{
 		$this->options = getopt(
@@ -86,8 +168,12 @@ class PHP_Extended_Markdown_Console
 			$this->input[] = $last;
 			$last = array_pop($argv);
 		}
+		$this->input = array_reverse($this->input);
 	}
 
+	/**
+	 * Run the command line options of the request
+	 */
 	protected function runOptions()
 	{
 		foreach($this->options as $_opt_n=>$_opt_v) 
@@ -104,7 +190,12 @@ class PHP_Extended_Markdown_Console
 			if (method_exists($this, $_opt_method))
 				$ok = $this->$_opt_method( $_opt_v );
 			else
-				self::info( "Unknown argument '$_opt_n'! (argument ignored)" );
+			{
+				if (count($this->options)==1)
+					self::error( "Unknown argument '$_opt_n'!" );
+				else
+					self::info( "Unknown argument '$_opt_n'! (argument ignored)" );
+			}
 		}
 
 		if (!empty($this->input)) 
@@ -116,36 +207,13 @@ class PHP_Extended_Markdown_Console
 		}
 	}
 
-	public function write( $str, $new_line=true )
-	{
-    	fwrite($this->stdout, $str.( $new_line===true ? PHP_EOL : '' ));
-    	fflush($this->stdout);
-	}
-	
-	public function info( $str, $new_line=true )
-	{
-		if ($this->verbose===true) self::write( ". ".$str." ...", $new_line );
-	}
-	
-	public function error( $str, $code=1 )
-	{
-		self::write( PHP_EOL.">> ".$str.PHP_EOL );
-		self::write( "( run '--help' option to get information )" );
-		self::endRun();
-		exit($code);
-	}
-	
-	private function endRun( $exit=false, $str=null )
-	{
-		if ($this->quiet===true) ini_restore('error_reporting'); 
-		if (!empty($str)) self::write( ">> ".$str );
-		if ($exit==true) exit(0);
-	}
-
 // -------------------
 // CLI methods
 // -------------------
 
+	/**
+	 * Run the whole script depending on options setted
+	 */
 	public function run()
 	{
 		if ($this->verbose===true)
@@ -178,25 +246,30 @@ class PHP_Extended_Markdown_Console
 		self::endRun(1);
 	}
 
-	public function runOption_help()
+	/**
+	 * Get the help string
+	 */
+	protected function runOption_help()
 	{
 //  --filter-html           filter out raw HTML (except styles)
 //  --filter-styles         filter out HTML styles
 		$help_str = <<<EOT
-[ Markdown Extended CLI ]
+[ PHP Extended Markdown - command line interface ]
 
 Usage:
-  ~$ php path/to/markdown.php [OPTION ...] [INPUT FILE(S) OR STRING(S)]
+  ~$ php path/to/emd_console [OPTION ...] [INPUT FILE(S) OR STRING(S)]
 
 Options:
   -v | --version          get Markdown version information
   -h | --help             get this help information
   -x | --verbose          increase verbosity of Markdown
-  -q | --quiet            do not write PHP error messages
-  -o | --output=FILE      specify a file to write generated content
+  -q | --quiet            do not write Markdown Parser or PHP error messages
   -m | --multi            multi-files input
+  -o | --output=FILE      specify a file to write generated content
+  -c | --config=FILE      configuration file to use for Markdown instance (INI format)
+  -g | --gamuts[=NAME]    get the list of gamuts (or just one if specified) processed on Markdown input
   --nofilter=A,B          specify a list of filters that will be ignored during Markdown parsing
-  --extract[=meta]        extract some (specific if sepcified) metadata from the Markdown input
+  --extract[=META]        extract some (specific if sepcified) metadata from the Markdown input
 
 Converts text(s) in specified file(s) (or stdin) from markdown syntax.
 By default, result is written through stdin in HTML format.
@@ -209,7 +282,7 @@ EOT;
 IMPORTANT NOTE: 
   Your system is running PHP $phpvers ; command line options with argument separated by
   an equal sign `=` is not supported ; please DO NOT USE EQUAL SIGN for options, use space :
-    ~$ php path/to/markdown.php -o my_output_file.html input_markdown.md
+    ~$ php path/to/emd_console -o my_output_file.html input_markdown.md
 
 EOT;
 		}
@@ -218,51 +291,84 @@ EOT;
 		exit(0);
 	}
 
-	public function runOption_version()
+	/**
+	 * Run the version option
+	 */
+	protected function runOption_version()
 	{
 		self::write( PHP_Extended_Markdown::info() );
 		self::endRun();
 		exit(0);
 	}
 
-	public function runOption_verbose()
+	/**
+	 * Run the verbose option
+	 */
+	protected function runOption_verbose()
 	{
 		$this->verbose = true;
 		self::info( "Enabling 'verbose' mode" );
 	}
 
-	public function runOption_quiet()
+	/**
+	 * Run the quiet option
+	 */
+	protected function runOption_quiet()
 	{
 		$this->quiet = true;
 		error_reporting(0); 
 		self::info( "Enabling 'quiet' mode, no PHP error will be written" );
 	}
 
-	public function runOption_multi()
+	/**
+	 * Run the multi option
+	 */
+	protected function runOption_multi()
 	{
 		$this->multi = true;
 		self::info( "Enabling 'multi' input mode" );
 	}
 
-	public function runOption_output( $file )
+	/**
+	 * Run the output option
+	 */
+	protected function runOption_output( $file )
 	{
 		$this->output = $file;
 		self::info( "Setting 'output' on `$this->output`, parsed content will be written in file(s)" );
 	}
 
-	public function runOption_filter_html()
+	/**
+	 * Run the config file option
+	 */
+	protected function runOption_config( $file )
+	{
+		$this->config = $file;
+		self::info( "Setting Markdown config file on `$this->config`" );
+	}
+
+	/**
+	 * Run the HTML filter option
+	 */
+	protected function runOption_filter_html()
 	{
 		$this->filter_html = true;
 		self::info( "Enabling HTML filter, all HTML will be parsed" );
 	}
 
-	public function runOption_filter_styles()
+	/**
+	 * Run the styles filter option
+	 */
+	protected function runOption_filter_styles()
 	{
 		$this->filter_styles = true;
 		self::info( "Enabling HTML styles filter, will try to parse styles" );
 	}
 
-	public function runOption_extract( $meta=true )
+	/**
+	 * Run the extract option
+	 */
+	protected function runOption_extract( $meta=true )
 	{
 		$this->extract = is_bool($meta) ? true : $meta;
 		if ($this->extract===true)
@@ -271,25 +377,100 @@ EOT;
 			self::info( "Setting 'extract' on `$this->extract`, only this metadata will be parsed" );
 	}
 
-	public function runOption_nofilter( $str )
+	/**
+	 * Run the no-filter option
+	 */
+	protected function runOption_nofilter( $str )
 	{
 		$this->nofilter = explode(',', $str);
 		self::info( "Setting 'nofilter' on `".join(', ', $this->nofilter)."`, these will be ignored during parsing" );
+	}
+
+	/**
+	 * Run the gamuts option : list gamuts pile of the parser
+	 */
+	protected function runOption_gamuts( $name=null )
+	{
+		if (empty($name))
+			self::info( "Getting lists of Gamuts from Markdown parser with current config" );
+		else
+			self::info( "Getting $name list of Gamuts from Markdown parser with current config" );
+		$_emd = $this->getEmdInstance();
+		$str='';
+		if (!empty($name))
+		{
+			$gamut = $_emd->getOption($name);
+			$gamuts = array( $name );
+			if (empty($gamut))
+			{
+				$gamut = $_emd->getOption($name.'Gamut');
+				$gamuts = array( $name.'Gamut' );
+				if (empty($gamut))
+				{
+					self::error( "Unknown Gamut '$name'!" );
+				}
+			}
+		}
+		else
+		{
+			$gamuts = $_emd->getOption('gamutsList');
+		}
+		$max_td_length=30;
+		foreach($gamuts as $_pile_name)
+		{
+			$str .= $_pile_name.PHP_EOL;
+			$table = $_emd->getOption( $_pile_name );
+			foreach($table as $_gamut_name=>$priority)
+			{
+				$str .= '    '.str_pad( $_gamut_name, $max_td_length ).'    '.$priority.PHP_EOL;
+			}
+		}
+		self::write( $str );
+		self::endRun();
+		exit(0);
 	}
 
 // -------------------
 // Process
 // -------------------
 
-	public function runStoryOnOneFile( $input )
+	/**
+	 * Use of the PHP Extended Markdown class as a singleton
+	 */
+	protected function getEmdInstance()
+	{
+		if (empty(self::$emd_instance))
+		{
+			$_options = array(
+				'skip_filters'=>$this->nofilter
+			);
+			if (false!==$this->config)
+			{
+				$_options['config_file'] = $this->config;
+			}
+			self::info( "Creating a PHP Extended Markdown instance with options ["
+				.str_replace("\n", '', var_export($_options,1))
+				."]", false );
+			self::$emd_instance = new PHP_Extended_Markdown( $_options );
+		}
+		return self::$emd_instance;
+	}
+	
+	protected function runStoryOnOneFile( $input )
 	{
 		if ($this->extract!==false) {
 			$infos = self::runOneFile( $input, null, $this->extract );
-			self::endRun(0, "Infos extracted from input `$input`:".$infos);
+			if ($this->quiet!==true)
+				self::endRun(0, ">> Infos extracted from input `$input`"
+					.( is_string($this->extract) ? " for tag `$this->extract`" : '' )
+					.' : '.$infos);
+			else
+				self::endRun(0, $infos);
 			return $infos;
 		} elseif (!empty($this->output)) {
 			$fsize = self::runOneFile( $input, $this->output );
-			self::endRun(0, "OK - File `$this->output` ($fsize) written with parsed content from file `$input`");
+			if ($this->quiet!==true)
+				self::endRun(0, ">> OK - File `$this->output` ($fsize) written with parsed content from file `$input`");
 			return $fsize;
 		} else {
 			$clength = self::runOneFile( $this->input[0] );
@@ -297,7 +478,7 @@ EOT;
 		}
 	}
 
-	public function runOneFile( $input, $output=null, $extract=null )
+	protected function runOneFile( $input, $output=null, $extract=null )
 	{
 		$return=null;
 		if (!empty($input)) 
@@ -310,7 +491,7 @@ EOT;
 			{
 				if (!is_null($extract)) 
 				{
-					$return = self::extractContent( $md_content, $extract );
+					$return = self::extractFromContent( $md_content, $extract );
 				} 
 				else 
 				{
@@ -332,7 +513,7 @@ EOT;
 		return $return;
 	}
 
-	public function getInput( $input )
+	protected function getInput( $input )
 	{
 		$md_content=null;
 		if (!empty($input)) 
@@ -358,13 +539,14 @@ EOT;
 		return $md_content;
 	}
 
-	public function parseContent( $md_content )
+	protected function parseContent( $md_content )
 	{
 		$md_output=null;
 		if (!empty($md_content)) 
 		{
 			self::info( "Parsing Mardkown content", false );
-			if ($md_output = Markdown($md_content, array('skip_filters'=>$this->nofilter))) 
+			$_emd = $this->getEmdInstance();
+			if ($md_output = $_emd->transform( $md_content )) 
 			{
 				$this->md_parsed_content .= $md_output;
 				self::info("OK [strlen: ".strlen($md_output)."]");
@@ -377,20 +559,16 @@ EOT;
 		return $md_output;
 	}
 
-	public function extractContent( $md_content, $extract )
+	protected function extractFromContent( $md_content, $extract )
 	{
 		$md_output=null;
 		if (!empty($md_content)) 
 		{
 			self::info( "Extracting Mardkown metadata", false );
-/*
-			if ($ok = Markdown($md_content, array('special_gamut'=>array(
-				'filter:MetaData:strip'=>1
-			)))) 
-*/
-			if ($parser = Markdown($md_content, true)) 
+			$_emd = $this->getEmdInstance();
+			if ($md_output = $_emd->transform( $md_content )) 
 			{
-				$metadata = $parser->get('metadata');
+				$metadata = $_emd->get('metadata');
 				self::info("OK [entries: ".count($metadata)."]");
 				$md_output = '';
 				foreach($metadata as $_metan=>$_metav) 
@@ -410,7 +588,7 @@ EOT;
 		return $md_output;
 	}
 
-	public function writeOutputFile( $output, $output_file )
+	protected function writeOutputFile( $output, $output_file )
 	{
 		$fsize=null;
 		if (!empty($output) && !empty($output_file)) 
@@ -429,7 +607,7 @@ EOT;
 		return $fsize;
 	}
 
-	public function writeOutput( $output, $exit=false )
+	protected function writeOutput( $output, $exit=false )
 	{
 		$clength=null;
 		if (!empty($output)) 
@@ -442,6 +620,10 @@ EOT;
 		}
 		return $clength;
 	}
+
+// ----------------------
+// Utilities
+// ----------------------
 
 	protected static function getFileSize( $file )
 	{

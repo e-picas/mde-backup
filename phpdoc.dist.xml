@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+	<title>PHP Extended Markdown</title>
+	<parser>
+		<target>build/phpdoc/</target>
+		<default-package-name>PHP_Extended_Markdown</default-package-name>
+		<visibility>public,protected</visibility>
+		<markers>
+			<item>TODO</item>
+			<item>FIXME</item>
+			<item>WIP</item>
+			<item>formater_overload</item>
+		</markers>
+	</parser>
+	<transformer>
+		<target>build/phpdoc/</target>
+	</transformer>
+	<files>
+		<directory>.</directory>
+		<ignore>test/*</ignore>
+		<ignore>build/*</ignore>
+		<ignore>work/*</ignore>
+		<ignore>.git/*</ignore>
+	</files>
+</phpdoc>

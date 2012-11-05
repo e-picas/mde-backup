@@ -1,0 +1,46 @@
+#!/usr/bin/env php
+<?php
+/**
+ * PHP Extended Markdown
+ * Copyright (c) 2012 Pierre Cassat
+ *
+ * original MultiMarkdown
+ * Copyright (c) 2005-2009 Fletcher T. Penney
+ * <http://fletcherpenney.net/>
+ *
+ * original PHP Markdown & Extra
+ * Copyright (c) 2004-2012 Michel Fortin  
+ * <http://michelf.com/projects/php-markdown/>
+ *
+ * original Markdown
+ * Copyright (c) 2004-2006 John Gruber  
+ * <http://daringfireball.net/projects/markdown/>
+ *
+ * @package 	PHP_Extended_Markdown
+ * @license   	BSD
+ * @link      	https://github.com/PieroWbmstr/Extended_Markdown
+ */
+
+// ------------------------------
+// COMMONS
+// ------------------------------
+
+// show errors at least initially
+@ini_set('display_errors','1'); @error_reporting(E_ALL ^ E_NOTICE);
+
+// set a default timezone to avoid PHP5 warnings
+$tmz = @date_default_timezone_get();
+@date_default_timezone_set( !empty($tmz) ? $tmz : 'Europe/Paris' );
+
+// ------------------------------
+// Markdown CLI
+// ------------------------------
+
+require_once __DIR__."/markdown_dev.php";
+
+if (php_sapi_name()==='cli') { 
+	@set_time_limit(0);
+	MarkdownCommandLine(); 
+}
+
+// Endfile
