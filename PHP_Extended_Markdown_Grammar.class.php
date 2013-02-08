@@ -39,10 +39,10 @@ class PHP_Extended_Markdown_Grammar
 	/**
 	 * Internal hashes used during transformation.
 	 */
-	protected $urls = array();
-	protected $titles = array();
-	protected $attributes = array();
-	protected $ids = array();
+	public $urls = array();
+	public $titles = array();
+	public $attributes = array();
+	public $ids = array();
 	
 // ----------------------------------
 // CONSTRUCTOR
@@ -2342,10 +2342,10 @@ class PHP_Extended_Markdown_Grammar
 	/**
 	 * Extra variables used during extra transformations.
 	 */
-	protected $footnotes = array();
-	protected $glossaries = array();
-	protected $citations = array();
-	protected $notes_ordered = array();
+	public $footnotes = array();
+	public $glossaries = array();
+	public $citations = array();
+	public $notes_ordered = array();
 	
 	/**
 	 * Remind all written notes and node_id for multi-references
@@ -2377,9 +2377,11 @@ class PHP_Extended_Markdown_Grammar
 	 */
 	protected function _teardownNotes() 
 	{
+/*
 		$this->footnotes = array();
 		$this->glossaries = array();
 		$this->citations = array();
+*/
 		$this->notes_ordered = array();
 	}
 
