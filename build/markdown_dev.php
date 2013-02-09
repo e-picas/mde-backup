@@ -30,7 +30,7 @@
 /**
  * The directory containing the Markdown class
  */
-@define('MARKDOWN_GLOBAL_DIR', __DIR__.'/../');
+@define('MARKDOWN_GLOBAL_DIR', __DIR__.'/../src/');
 
 /**
  * The directory for Markdown development

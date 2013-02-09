@@ -2,7 +2,7 @@
 <phpdoc>
 	<title>PHP Extended Markdown</title>
 	<parser>
-		<target>build/phpdoc/</target>
+		<target>../phpdoc/</target>
 		<default-package-name>PHP_Extended_Markdown</default-package-name>
 		<visibility>public,protected</visibility>
 		<markers>
@@ -13,10 +13,10 @@
 		</markers>
 	</parser>
 	<transformer>
-		<target>build/phpdoc/</target>
+		<target>../phpdoc/</target>
 	</transformer>
 	<files>
-		<directory>.</directory>
+		<directory>../src</directory>
 		<ignore>test/*</ignore>
 		<ignore>build/*</ignore>
 		<ignore>work/*</ignore>

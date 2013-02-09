@@ -22,4 +22,4 @@ AddType text/html .md
 # Treat '.md' files by the Markdown handler
 # CAUTION - this requires to know exactly where the CGI is ...
 AddHandler MarkDown .md
-Action MarkDown /GitHub_projects/Extended_Markdown/build/cgi-scripts/emd_apacheHandler.sh virtual
+Action MarkDown /GitHub_projects/Extended_Markdown/tools/cgi-scripts/emd_apacheHandler.sh virtual
