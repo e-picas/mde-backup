@@ -1,3 +1,12 @@
+Title:   A Sample MultiMarkdown Document  
+Author:  Pierre Cassat  
+Date:    February 20, 2012  
+Comment: This is a comment intended to demonstrate
+         metadata that spans multiple lines, yet
+         is treated as a single value.  
+Test:    And this is a new key-value pair  
+Base Header Level:  2  
+Quotes Language: french  
 
 # Basic tags from the original *Markdown*
 

@@ -97,7 +97,7 @@ require_once 'SplClassLoader.php';
 $loader = new SplClassLoader('Markdown', $src);
 $loader->register();
 
-$default_types = array( 'plain', 'processmarkdown', 'processmarkdownextra' );
+$default_types = array( 'plain', 'processmarkdown', 'processmarkdownextra', 'emd_interface' );
 $md_type = (!empty($_GET) && !empty($_GET['type']) && in_array($_GET['type'], $default_types)) ? $_GET['type'] : $default_types[0];
 
 $default_files = array( __DIR__.'/MD_syntax.md', __DIR__.'/../README.md' );
@@ -118,6 +118,12 @@ switch($md_type)
         $alt_content = '<p>MarkdownExtra parsing of file content : \''.$md_file.'\'.</p>';
 		$parser = new Markdown\ExtraParser;
         $md_content = $parser->transform( $file_content );
+        break;
+
+    case 'emd_interface':
+        $alt_content = '<p>Extended Markdown interface on file : \''.$md_file.'\'.</p>';
+        require_once $src.'markdown.php';
+        $md_content = Markdown( $file_content );
         break;
 
     default: case 'plain':
