@@ -16,7 +16,7 @@ OPTIONS=''
 ###############
 # Process Markdown file.
 ###############
-CONSOLE=$(pwd)/../src/emd_console
+CONSOLE=$(pwd)/../bin/emd_console
 MARKDOWN_RESULT=$(php "$CONSOLE" "$OPTIONS" "$PATH_TRANSLATED")
 
 ###############
