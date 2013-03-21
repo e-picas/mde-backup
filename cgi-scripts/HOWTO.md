@@ -12,9 +12,9 @@ version of the original content.
 To allow Apache to use this script, your webserver must run at least version 2 of Apache with the following modules
 enabled:
 
--   mod\_rewrite
--   mod\_actions
--   mod\_mime
+-   [mod_rewrite](http://httpd.apache.org/docs/2.2/en/mod/mod_rewrite.html)
+-   [mod_actions](http://httpd.apache.org/docs/trunk/en/mod/mod_actions.html)
+-   [mod_mime](http://httpd.apache.org/docs/2.2/en/mod/mod_mime.html)
 
 To learn more about Apache's module enabling, see <http://wiki.apache.org/httpd/DebianLikePlatform>.
 
@@ -37,13 +37,13 @@ you to use a single `htaccess` file for both your documents and the handler, you
     AddHandler cgi-script .sh
 
     # To display '.md' files as text if something went wrong
-    # You can add any extension(s) you want to parse at the end of the line, separated by space
     AddType text/html .md
 
     # Here you can define some custom configuration variables used by the parser
-    #SetEnv EMD_TPL /SERVER/PATH/TO/TEMPLATE/FILE
+    #SetEnv EMD_TPL /{ SERVER ABSOLUTE PATH TO }/template_file.html
 
     # Treat '.md' files by the Markdown handler
+    # You can add any extension(s) you want to parse at the end of the line, separated by space
     # CAUTION - this requires to know exactly where the CGI is ...
     AddHandler MarkDown .md
     Action MarkDown /{ SERVER ABSOLUTE PATH TO }/extended-markdown/cgi-scripts/emd_apacheHandler.sh virtual

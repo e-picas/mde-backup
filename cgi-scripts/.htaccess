@@ -22,6 +22,7 @@ AddType text/html .md
 SetEnv EMD_TPL /GitHub_projects/extended-markdown/tests/template.html
 
 # Treat '.md' files by the Markdown handler
+# You can add any extension(s) you want to parse at the end of the line, separated by space
 # CAUTION - this requires to know exactly where the CGI is ...
 AddHandler MarkDown .md
 Action MarkDown /GitHub_projects/extended-markdown/cgi-scripts/emd_apacheHandler.sh virtual

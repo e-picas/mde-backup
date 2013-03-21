@@ -284,7 +284,7 @@ Options:
   -t | --template=FILE    specify a template file used to embed parsed content (replacing tag @MD_CONTENT@)
 
 Converts text(s) in specified file(s) (or stdin) from markdown syntax.
-By default, result is written through stdin in HTML format.
+By default, result is written through stdout in HTML format.
 
 EOT;
         if (version_compare(PHP_VERSION, '5.1.0', '<')) {
