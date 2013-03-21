@@ -9,14 +9,26 @@ version of the original content.
 
 ## Prerequisite
 
-To allow Apache to use this script, your webserver must run at least version 2 of Apache with the following modules:
+To allow Apache to use this script, your webserver must run at least version 2 of Apache with the following modules
+enabled:
 
--   mod_rewrite
--   mod_actions
--   mod_mime
+-   mod\_rewrite
+-   mod\_actions
+-   mod\_mime
+
+To learn more about Apache's module enabling, see <http://wiki.apache.org/httpd/DebianLikePlatform>.
 
 
-## Sample htaccess file
+## Apache configuration
+
+To ask Apache to handle Markdown files with the parser, you must define the following directives in your
+`.htaccess` file (*or create a new one if it doesn't exist*). This `htaccess` file must involve at least 
+the root directory of your Markdown files AND the shell handler itslef. If your architecture doesn't allow
+you to use a single `htaccess` file for both your documents and the handler, you will have to define both
+`.htaccess` files, one for each concerned directory.
+
+
+### Sample htaccess file
 
     # We autorize CGIs
     Options +ExecCGI
@@ -28,8 +40,17 @@ To allow Apache to use this script, your webserver must run at least version 2 o
     # You can add any extension(s) you want to parse at the end of the line, separated by space
     AddType text/html .md
 
+    # Here you can define some custom configuration variables used by the parser
+    #SetEnv EMD_TPL /SERVER/PATH/TO/TEMPLATE/FILE
+
     # Treat '.md' files by the Markdown handler
     # CAUTION - this requires to know exactly where the CGI is ...
     AddHandler MarkDown .md
     Action MarkDown /{ SERVER ABSOLUTE PATH TO }/extended-markdown/cgi-scripts/emd_apacheHandler.sh virtual
 
+
+**CAUTION** - The server pathes used in these directives must be related to your server's Apache
+`DOCUMENT_ROOT` (*and not to your `/` filesystem root*).
+
+**NOTE** - The default `.htaccess` files of this package are designed to work with a copy or a clone
+of the GIT repository at `/GitHub_projects/extended-markdown/` from the Apache `DOCUMENT_ROOT`.
