@@ -17,81 +17,108 @@
  */
 namespace MarkdownExtended;
 
-use \InvalidArgumentException, \RuntimeException;
-
 /**
  */
 class Registry
 {
 
 	/**
-	 * Loaded objects stack registry
+	 * Array of the registry stacks
 	 * @var array
 	 */
-	private $loaded;
+	private $stacks;
+
+    /**
+     * @static array
+     */
+    public static $registry_stacks = array('loaded', 'config', 'parser');
 
 	/**
-	 * Config entries stack registry
-	 * @var array
-	 */
-	private $config;
-
-	/**
-	 * Parser variables stack registry
-	 * @var array
-	 */
-	private $parser;
-
-	/**
-	 * Initialize the registry
+	 * Initialize the registry stacks to empty arrays
 	 */
 	public function __construct()
 	{
-	 	$this->loaded = array();
-	 	$this->config = array();
-	 	$this->parser = array();
+	    foreach (self::$registry_stacks as $stack) {
+    	 	$this->stacks[$stack] = $this->getStackInstance($stack);
+	    }
 	}
+
+    /**
+     * Create, check and get a new registry stack object instance
+     */
+    protected function getStackInstance($stack_name)
+    {
+        if (!$this->isStack($stack_name)) {
+            throw new \InvalidArgumentException(
+                sprintf('Unknown stack <%s> in registry!', $stack)
+            );
+        }
+        $_cls = '\MarkdownExtended\\RegistryStack\\'.ucfirst($stack_name);
+        if (class_exists($_cls)) {
+            $stack = new $_cls;
+            if (!is_subclass_of($_cls, '\MarkdownExtended\\RegistryStack\\AbstractStack')) {
+                throw new \LogicException(
+                    sprintf('Registry stack class <%s> must extend abstract class <%s>!',
+                        $_cls, '\MarkdownExtended\\RegistryStack\\AbstractStack')
+                );
+            }
+            return $stack;
+        } else {
+            throw new \InvalidArgumentException(
+                sprintf('Registry stack class <%s> not found!', $_cls)
+            );
+        }
+    }
+
+    /**
+     * Test if a stack exists
+     *
+     * @param string $stack_name
+     *
+     * @return bool
+     */
+    public function isStack($stack_name)
+    {
+        return in_array($stack_name, self::$registry_stacks);
+    }
+
+    /**
+     * @param string $stack_name
+     */
+    public function getStack($stack_name)
+    {
+        if (!$this->isStack($stack_name)) {
+            throw new \InvalidArgumentException(
+                sprintf('Unknown stack <%s> in registry!', $stack)
+            );
+        }
+        return $this->stacks[$stack_name];
+    }
+
+    /**
+     * Validate a stack entry name
+     * @param string $var
+     */
+    public function validateEntryName($var)
+    {
+		if (!is_string($var) || !ctype_alnum(str_replace(array('_', '\\'), '', $var))) {
+            throw new \InvalidArgumentException(
+                sprintf("Registry entry must be named by alpha-numeric string, <%s> given!", $var)
+            );
+            return false;
+        }
+        return true;
+    }
 
 	/**
 	 * Set or reset a new instance in global registry
 	 */
 	public function set($var, $val, $stack)
 	{
-		if (!empty($stack) && is_string($stack)) {
-			if (is_string($var) && ctype_alnum( str_replace(array('_', '\\'), '', $var) )) {
-				if (isset($this->{$stack})){
-					switch ($stack) {
-						case 'loaded':
-							if (is_object($val))
-								$this->loaded[$var] = $val;
-							else
-								throw new InvalidArgumentException(sprintf(
-  			  	  					"New registry entry in the 'loaded' stack must be an object instance, <%s> given!", gettype($val)
-			  	  	  			));
-							break;
-						case 'config':
-							$this->config[$var] = $val;
-							break;
-						case 'parser':
-							$this->parser[$var] = $val;
-							break;
-						default: break;
-					}
-				} else{
-					throw new InvalidArgumentException(sprintf(
-  		  				"Unknown stack <%s> in registry!", $stack
-		  	  		));
-				}
-			} else {
-				throw new InvalidArgumentException(sprintf(
-    				"New registry entry must be named by alpha-numeric string, <%s> given!", $var
-	    		));
-			}
-		} else {
-			throw new InvalidArgumentException(sprintf(
-    			"No stack for new registry entry <%s>!", $var
-	    	));
-		}
+	    $stack_obj = $this->getStack($stack);
+	    if ($this->validateEntryName($var)) {
+    	    $stack_obj->set($var, $val);
+    	}
 	}
 
 	/**
@@ -99,35 +126,10 @@ class Registry
 	 */
 	public function add($var, $val, $stack)
 	{
-		if (!empty($stack) && is_string($stack)) {
-			if (is_string($var) && ctype_alnum( str_replace(array('_', '\\'), '', $var) )) {
-				if (isset($this->{$stack})){
-					switch ($stack) {
-						case 'loaded':
-							throw new RuntimeException(
-  			  					"Registry entry in the 'load' stack can not be extended!"
-			  		  		);
-							break;
-						case 'config': case 'parser':
-							$this->{$stack}[$var] = $this->extend($this->{$stack}[$var], $val);
-							break;
-						default: break;
-					}
-				} else{
-					throw new InvalidArgumentException(sprintf(
-  		  				"Unknown stack <%s> in registry!", $stack
-		  	  		));
-				}
-			} else {
-				throw new InvalidArgumentException(sprintf(
-    				"New registry entry must be named by alpha-numeric string, <%s> given!", $var
-	    		));
-			}
-		} else {
-			throw new InvalidArgumentException(sprintf(
-    			"No stack for new registry entry <%s>!", $var
-	    	));
-		}
+	    $stack_obj = $this->getStack($stack);
+	    if ($this->validateEntryName($var)) {
+    	    $stack_obj->add($var, $val);
+    	}
 	}
 
 	/**
@@ -135,41 +137,10 @@ class Registry
 	 */
 	public function remove($var, $val = null, $stack = null)
 	{
-		if (!empty($stack) && is_string($stack)) {
-			if (is_string($var) && ctype_alnum( str_replace(array('_', '\\'), '', $var) )) {
-				if (isset($this->{$stack})) {
-					switch ($stack) {
-						case 'loaded':
-							throw new RuntimeException(
-  			  					"Registry entry in the 'load' stack can not be extended!"
-			  		  		);
-							break;
-						case 'config': case 'parser':
-							if ($val) {
-								if (isset($this->{$stack}[$var]) && isset($this->{$stack}[$var][$val]))
-									unset($this->{$stack}[$var][$val]);
-							} else {
-								if (isset($this->{$stack}[$var]))
-									unset($this->{$stack}[$var]);
-							}
-							break;
-						default: break;
-					}
-				} else {
-					throw new InvalidArgumentException(sprintf(
-  		  				"Unknown stack <%s> in registry!", $stack
-		  	  		));
-				}
-			} else {
-				throw new InvalidArgumentException(sprintf(
-    				"New registry entry must be named by alpha-numeric string, <%s> given!", $var
-	    		));
-			}
-		} else {
-			throw new InvalidArgumentException(sprintf(
-    			"No stack for new registry entry <%s>!", $var
-	    	));
-		}
+	    $stack_obj = $this->getStack($stack);
+	    if ($this->validateEntryName($var)) {
+    	    $stack_obj->remove($var, $val);
+    	}
 	}
 
 	/**
@@ -177,57 +148,11 @@ class Registry
 	 */
 	public function get($var, $stack, $default = null)
 	{
-		if (!empty($stack) && is_string($stack)) {
-			if (is_string($var) && ctype_alnum( str_replace(array('_', '\\'), '', $var) )) {
-				if (isset($this->{$stack})){
-					if (isset($this->{$stack}[$var]))
-						return $this->{$stack}[$var];
-				} else {
-					throw new InvalidArgumentException(sprintf(
-  		  				"Unknown stack <%s> in registry!", $stack
-		  	  		));
-				}
-			} else {
-				throw new InvalidArgumentException(sprintf(
-  	  				"Registry entry must be retrieved by alpha-numeric string, <%s> given!", $var
-	  	  		));
-			}
-		} else {
-			throw new InvalidArgumentException(sprintf(
-    			"No stack for retreiving registry entry <%s>!", $var
-	    	));
-		}
-		return $default;
-	}
-
-	/**
-	 * Extend a value with another, if types match
-	 */
-	public function extend($what, $add)
-	{
-		if (empty($what)) return $add;
-		switch (gettype($what)) {
-			case 'string': return $what.$add; break;
-			case 'numeric': return ($what+$add); break;
-			case 'array': 
-				if (is_array($add)) {
-					$what += $add;
-					return $what; 
-				} else {
-					throw new InvalidArgumentException(
-    					"Trying to extend an array with not an array!"
-			    	);
-				}
-				break;
-			case 'object': 
-				throw new InvalidArgumentException("Trying to extend an object!");
-				break;
-			default: 
-				throw new InvalidArgumentException(sprintf(
-  	  				"No extending definition found for type <%s>!", gettype($what)
-		    	));
-				break;
-		}
+	    $stack_obj = $this->getStack($stack);
+	    if ($this->validateEntryName($var)) {
+    	    return $stack_obj->get($var, $default);
+    	}
+    	return $default;
 	}
 
 }
