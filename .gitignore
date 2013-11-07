@@ -7,4 +7,4 @@ Icon
 MD_test.md
 work/*
 build/generated/*
-build/phpdoc/*
+phpdoc/*

@@ -21,26 +21,11 @@
  * @link      	https://github.com/PieroWbmstr/Extended_Markdown
  */
 
-// ------------------------------
-// COMMONS
-// ------------------------------
-
-// show errors at least initially
-@ini_set('display_errors','1'); @error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
-
-// set a default timezone to avoid PHP5 warnings
-$tmz = @date_default_timezone_get();
-@date_default_timezone_set( !empty($tmz) ? $tmz : 'Europe/Paris' );
-
-// ------------------------------
-// Markdown CLI
-// ------------------------------
-
-require_once __DIR__."/markdown_dev.php";
+require_once __DIR__."/markdown.php";
 
 if (php_sapi_name()==='cli') { 
-	@set_time_limit(0);
-	MarkdownCommandLine(); 
+	set_time_limit(0);
+	Markdown_CLI(); 
 }
 
 // Endfile

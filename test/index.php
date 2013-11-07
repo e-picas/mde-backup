@@ -92,6 +92,16 @@ define( 'MARKDOWN_CLOSE_TAGS_RE',         'hr|img' );
 // PROCESS
 // ------------------------------
 
+$current_dir = __DIR__.'/../src/';
+$versions_dir = __DIR__.'/../versions/';
+$md_interface = 'markdown.php';
+
+$all_versions = array('current');
+foreach(scandir($versions_dir) as $_d) {
+    if (!in_array($_d, array('.', '..')) && is_dir($versions_dir.$_d) && file_exists($versions_dir.$_d.'/'.$md_interface))
+        $all_versions[] = $_d;
+}
+
 $md_content=$alt_content='';
 
 if (!empty($_GET) && isset($_GET['type'])) {
@@ -100,8 +110,16 @@ if (!empty($_GET) && isset($_GET['type'])) {
 	switch($_GET['type']) 
 	{
 		case 'processmarkdown':
-			require __DIR__.'/../markdown.php';
-			$alt_content = '<p>'.PHP_Extended_Markdown::info(true).'</p><hr />';
+		    $md_version = !empty($_GET['mdv']) ? $_GET['mdv'] : 'current';
+		    if ($md_version!=='current' && @file_exists($versions_dir.$md_version.'/'.$md_interface))
+		    {
+    			require $versions_dir.$md_version.'/'.$md_interface;
+		    }
+		    else
+		    {
+    			require $current_dir.$md_interface;
+    			$alt_content = '<p>'.PHP_Extended_Markdown::info(true).'</p><hr />';
+		    }
 			if (empty($md_content)) $md_content = Markdown( $file_content );
 			break;
 		default: case 'plain':
@@ -124,6 +142,14 @@ if (!empty($_GET) && isset($_GET['type'])) {
 // ------------------------------
 // VIEW
 // ------------------------------
+
+$opts='';
+foreach($all_versions as $_vers) {
+    $opts .= '<option value="'.$_vers.'"'
+        .(!empty($_GET['mdv']) && $_GET['mdv']===$_vers ? ' selected="selected"' : '')
+        .'>'.$_vers.'</option>';
+}
+$selector = '<select name="mdv">'.$opts.'</select>';
 
 	echo <<<EOT
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -180,6 +206,10 @@ function emdreminders_popup(url){
 	new_f.focus();
 	return false; 
 }
+function submitMdForm() {
+    document.forms['md_form'].submit();
+    return false;
+}
 //--></script>
 </head>
 <body>
@@ -189,12 +219,16 @@ function emdreminders_popup(url){
 		<p style="font-size: .8em">For more infos, see : <a href="https://github.com/PieroWbmstr/Extended_Markdown">https://github.com/PieroWbmstr/Extended_Markdown</a></p>
 	</div>
 	<div style="float:left">
+	    <form name="md_form" action="" method="get">
+		<input type="hidden" name="type" value="processmarkdown" />
 		<h2 style="float: left;">MENU</h2>
 		<ul style="float: left;margin: auto 12px;">
 			<li><a href="index.php?type=plain">See the original Markdown test file content</a></li>
-			<li><a href="index.php?type=processmarkdown">See the Markdown test file processed with PHP Extended Markdown</a></li>
-			<li><a href="../markdown_reminders.html" onclick="return emdreminders_popup('../markdown_reminders.html');" title="Markdown syntax reminders (new floated window)" target="_blank">See the Markdown syntax reminders</a></li>
+			<li title="Select a version in the list then click on this link to validate"><a href="index.php?type=processmarkdown" onclick="return submitMdForm();">See the Markdown test file processed with</a> $selector</li>
+			<li><a href="../src/markdown_reminders.html" onclick="return emdreminders_popup('../src/markdown_reminders.html');" title="Markdown syntax reminders (new floated window)" target="_blank">See the Markdown syntax reminders</a></li>
 		</ul>
+<noscript><input type="submit" /></noscript>
+		</form>
 	</div>
 	<hr style="clear: both;" />
 	{$alt_content}
