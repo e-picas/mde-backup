@@ -135,6 +135,16 @@ class Registry
         return isset($this->data[$var]) ? $this->data[$var] : $default;
     }
 
+    /**
+     * Get the global registry
+     *
+     * @return  array
+     */
+    public function getAll()
+    {
+        return $this->data;
+    }
+
 // --------------
 // Variables manipulation
 // --------------

@@ -26,9 +26,8 @@ if (file_exists($bt = __DIR__.'/../src/bootstrap.php')) {
 // launch console API
 if (strpos(php_sapi_name(),'cli')!==false) {
     @set_time_limit(0);
-    \MarkdownExtended\MarkdownExtended::getInstance()
-        ->get('CommandLine\Console')
-        ->run();
+    $application = new \MarkdownExtended\Console\MDEApplication();
+    $application->run();
 } else {
     echo 'This file is for command line usage only!';
     exit(1);
